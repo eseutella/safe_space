@@ -1,15 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
+import FormButton from '../components/FormButton';
+import { CommonActions } from "@react-navigation/native";
 
-const HomeScreen = () => {
+const SettingsScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Home Screen</Text>
+            <FormButton buttonTitle='Logout' onPress={() =>
+                navigation.dispatch(CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "Login" }]
+                }))}
+            />
         </View>
     );
 };
 
-export default HomeScreen;
+export default SettingsScreen;
 
 const styles = StyleSheet.create({
     container: {

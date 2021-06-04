@@ -1,9 +1,10 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import MainTabScreen from "./screens/MainTabScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 import {View} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
@@ -31,7 +32,7 @@ const App = () => {
                         headerLeft: () => (
                             <View style={{marginLeft: 10}}>
                                 <FontAwesome.Button
-                                    name="angle-double-left"
+                                    name="angle-left"
                                     size={25}
                                     backgroundColor="#f9fafd"
                                     color="#333"
@@ -42,9 +43,32 @@ const App = () => {
                     })}
                 />
                 <Stack.Screen
-                    name="Home"
-                    component={HomeScreen}
+                    name="MainTab"
+                    component={MainTabScreen}
                     options={{header: () => null}}
+                />
+                <Stack.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={({navigation}) => ({
+                        title: 'Settings and Privacy',
+                        headerStyle: {
+                            backgroundColor: '#f9fafd',
+                            shadowColor: '#f9fafd',
+                            elevation: 0,
+                        },
+                        headerLeft: () => (
+                            <View style={{marginLeft: 10}}>
+                                <FontAwesome.Button
+                                    name="angle-left"
+                                    size={25}
+                                    backgroundColor="#f9fafd"
+                                    color="#333"
+                                    onPress={() => navigation.navigate('Profile')}
+                                />
+                            </View>
+                        ),
+                    })}
                 />
             </Stack.Navigator>
         </NavigationContainer>

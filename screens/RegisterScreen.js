@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Alert, Image} from 'react-native';
+import { CommonActions } from "@react-navigation/native";
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import PasswordFormInput from "../components/PasswordFormInput";
@@ -126,8 +127,14 @@ const RegisterScreen = ({navigation}) => {
             ]);
         } else {
             try {
-                const response = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password);
-                navigation.navigate('Login');
+                const {response} = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password);
+                if (response) {
+                    await response.updateProfile ({ displayName: data.username });
+                }
+                navigation.dispatch(CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "Login" }]
+                }))
             } catch (err) {
                 Alert.alert('Error!', 'The email address is already in use by another account.', [
                     {text: 'Okay'}

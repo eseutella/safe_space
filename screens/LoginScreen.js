@@ -5,6 +5,7 @@ import FormButton from '../components/FormButton';
 import PasswordFormInput from "../components/PasswordFormInput";
 import firebase from '../api/Firebase';
 import * as Animatable from "react-native-animatable";
+import {CommonActions} from "@react-navigation/native";
 
 const LoginScreen = ({navigation}) => {
     /**const [email, setEmail] = useState();
@@ -73,7 +74,10 @@ const LoginScreen = ({navigation}) => {
         } else {
             try {
                 const response = await firebase.auth().signInWithEmailAndPassword(data.email, data.password);
-                navigation.navigate('Home');
+                navigation.dispatch(CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "MainTab" }]
+                }))
             } catch (error) {
                 Alert.alert('Error!', 'Incorrect email or password.', [
                     {text: 'Okay'}

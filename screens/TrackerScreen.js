@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 
-const HomeScreen = () => {
+const TrackerScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Home Screen</Text>
+            <Text style={styles.text}>Tracker Screen</Text>
         </View>
     );
 };
 
-export default HomeScreen;
+export default TrackerScreen;
 
 const styles = StyleSheet.create({
     container: {
