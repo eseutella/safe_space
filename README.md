@@ -1,6 +1,6 @@
 # NUS Orbital Project 2021 - Safe Space 
 ### Difficulty: Gemini (Moderate)
-# Team Members:
+# Team Members
 ### Lee Jie Yi Estella
 ### Toh Zhiao Wei
 # Project Documentation
