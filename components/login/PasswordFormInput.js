@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { windowHeight, windowWidth } from '../utils/Dimension';
+import { windowHeight, windowWidth } from '../../utils/Dimension';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from "react-native-vector-icons/Feather";

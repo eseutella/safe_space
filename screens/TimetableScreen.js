@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 
-const TrackerScreen = () => {
+const TimetableScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Tracker Screen</Text>
+            <Text style={styles.text}>Timetable Screen</Text>
         </View>
     );
 };
 
-export default TrackerScreen;
+export default TimetableScreen;
 
 const styles = StyleSheet.create({
     container: {

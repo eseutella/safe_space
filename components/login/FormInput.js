@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import { windowHeight, windowWidth } from '../utils/Dimension';
+import { windowHeight, windowWidth } from '../../utils/Dimension';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Feather from "react-native-vector-icons/Feather";
 
 const FormInput = ({labelValue, placeholderText, iconType, ...rest}) => {
     return (

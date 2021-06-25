@@ -1,17 +1,12 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Alert, Image} from 'react-native';
-import { CommonActions } from "@react-navigation/native";
-import FormInput from '../components/FormInput';
-import FormButton from '../components/FormButton';
-import PasswordFormInput from "../components/PasswordFormInput";
+import FormInput from '../components/login/FormInput';
+import FormButton from '../components/login/FormButton';
+import PasswordFormInput from "../components/login/PasswordFormInput";
 import * as Animatable from 'react-native-animatable';
 import firebase from '../api/Firebase';
 
-const RegisterScreen = ({navigation}) => {
-    /**const [username, setUsername] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState()
-    const [confirmPassword, setConfirmPassword] = useState();*/
+const RegisterScreen = () => {
     const [data, setData] = useState({
         username: '',
         email: '',
@@ -103,7 +98,7 @@ const RegisterScreen = ({navigation}) => {
         });
     }
 
-    const register = async () => {
+    const register = () => {
         if (data.username.length == 0 || data.email.length == 0
         || data.password.length == 0 || data.confirmPassword.length == 0) {
             Alert.alert('Error!', 'There are empty fields.', [
@@ -126,20 +121,21 @@ const RegisterScreen = ({navigation}) => {
                 {text: 'Okay'}
             ]);
         } else {
-            try {
-                const {response} = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password);
-                if (response) {
-                    await response.updateProfile ({ displayName: data.username });
-                }
-                navigation.dispatch(CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "Login" }]
-                }))
-            } catch (err) {
-                Alert.alert('Error!', 'The email address is already in use by another account.', [
-                    {text: 'Okay'}
-                ]);
-            }
+            firebase.auth()
+                .createUserWithEmailAndPassword(data.email, data.password)
+                .then(() => {
+                    const user = firebase.auth().currentUser;
+                    user.updateProfile({displayName: data.username})
+                })
+                .then(() => {
+                    const user = firebase.auth().currentUser;
+                    firebase.firestore().collection("users").doc(user.uid).set({});
+                })
+                .catch(() => {
+                    Alert.alert('Error!', 'The email address is already in use by another account.', [
+                        {text: 'Okay'}
+                    ])
+                })
         }
     }
 
