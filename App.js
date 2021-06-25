@@ -5,6 +5,8 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import MainTabScreen from "./screens/MainTabScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import AddPostScreen from "./screens/AddPostScreen";
+import HomeScreen from "./screens/HomeScreen";
 import {View} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
@@ -13,7 +15,7 @@ const Stack = createStackNavigator();
 const App = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login">
+            <Stack.Navigator initialRouteName="MainTab">
                 <Stack.Screen
                     name="Login"
                     component={LoginScreen}
@@ -65,6 +67,28 @@ const App = () => {
                                     backgroundColor="#f9fafd"
                                     color="#333"
                                     onPress={() => navigation.navigate('Profile')}
+                                />
+                            </View>
+                        ),
+                    })}
+                />
+                <Stack.Screen
+                    name="HomeScreen"
+                    component={HomeScreen}
+                    options={{header: () => null}}
+                />
+                <Stack.Screen
+                    name="AddPost"
+                    component={AddPostScreen}
+                    options={({navigation}) => ({
+                        headerLeft: () => (
+                            <View style={{marginLeft: 10}}>
+                                <FontAwesome.Button
+                                    name="angle-left"
+                                    size={25}
+                                    backgroundColor="#f9fafd"
+                                    color="#333"
+                                    onPress={() => navigation.navigate('HomeScreen')}
                                 />
                             </View>
                         ),
