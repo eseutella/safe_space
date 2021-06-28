@@ -1,26 +1,40 @@
 import React from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import TodoScreen from "./TodoScreen";
+import TimetableScreen from "./TimetableScreen";
+
+const Tab = createMaterialTopTabNavigator();
 
 const PlannerScreen = () => {
+    const insets = useSafeAreaInsets();
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Planner Screen</Text>
-        </View>
+        <Tab.Navigator
+            initialRouteName="Todo"
+            keyboardDismissMode="on-drag"
+            tabBarOptions={{
+                activeTintColor: '#051d5f',
+                indicatorStyle: '#051d5f',
+                labelStyle: { fontSize: 14 },
+                style: {
+                    backgroundColor: '#fff',
+                    marginTop: insets.top
+                },
+            }}
+        >
+            <Tab.Screen
+                name="Todo"
+                component={TodoScreen}
+                options={{ tabBarLabel: 'To-do List' }}
+            />
+            <Tab.Screen
+                name="Timetable"
+                component={TimetableScreen}
+                options={{ tabBarLabel: 'Timetable' }}
+            />
+        </Tab.Navigator>
     );
-};
+}
 
 export default PlannerScreen;
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#f9fafd',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    text: {
-        fontSize: 20,
-        color: '#333333'
-    }
-});

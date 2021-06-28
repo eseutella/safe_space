@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import {View, Text, TouchableOpacity, Image, StyleSheet, Alert} from 'react-native';
-import FormInput from '../components/FormInput';
-import FormButton from '../components/FormButton';
-import PasswordFormInput from "../components/PasswordFormInput";
+import FormInput from '../components/login/FormInput';
+import FormButton from '../components/login/FormButton';
+import PasswordFormInput from "../components/login/PasswordFormInput";
 import firebase from '../api/Firebase';
 import * as Animatable from "react-native-animatable";
-import {CommonActions} from "@react-navigation/native";
 
 const LoginScreen = ({navigation}) => {
-    /**const [email, setEmail] = useState();
-    const [password, setPassword] = useState();*/
     const [data, setData] = useState({
         email: '',
         password: '',
@@ -58,7 +55,7 @@ const LoginScreen = ({navigation}) => {
         });
     }
 
-    const login = async () => {
+    const login = () => {
         if (data.email.length == 0 || data.password.length == 0) {
             Alert.alert('Error!', 'Email or Password cannot be empty.', [
                 {text: 'Okay'}
@@ -72,17 +69,13 @@ const LoginScreen = ({navigation}) => {
                 {text: 'Okay'}
             ]);
         } else {
-            try {
-                const response = await firebase.auth().signInWithEmailAndPassword(data.email, data.password);
-                navigation.dispatch(CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "MainTab" }]
-                }))
-            } catch (error) {
-                Alert.alert('Error!', 'Incorrect email or password.', [
-                    {text: 'Okay'}
-                ]);
-            }
+            firebase.auth()
+                .signInWithEmailAndPassword(data.email, data.password)
+                .catch(() => {
+                    Alert.alert('Error!', 'Incorrect email or password.', [
+                        {text: 'Okay'}
+                    ])
+                })
         }
     }
 
@@ -102,6 +95,7 @@ const LoginScreen = ({navigation}) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                autoCompleteType="email"
             />
 
             { data.isValidEmail ? null :
