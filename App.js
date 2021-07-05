@@ -81,22 +81,18 @@ const Screens = () => {
                 })}
             />
             <Stack.Screen
-                name="HomeScreen"
-                component={HomeScreen}
-                options={{header: () => null}}
-            />
-            <Stack.Screen
                 name="AddPost"
                 component={AddPostScreen}
                 options={({navigation}) => ({
+                    title: 'Create New Post',
                     headerLeft: () => (
                         <View style={{marginLeft: 10}}>
                             <FontAwesome.Button
                                 name="angle-left"
                                 size={25}
-                                backgroundColor="#f9fafd"
+                                backgroundColor="#fff"
                                 color="#333"
-                                onPress={() => navigation.navigate('HomeScreen')}
+                                onPress={() => navigation.navigate('MainTab')}
                             />
                         </View>
                     ),

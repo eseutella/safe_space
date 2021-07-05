@@ -1,13 +1,13 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList} from "react-native";
+import {View, Text, StyleSheet, FlatList, SafeAreaView, TouchableOpacity} from "react-native";
 
 import Icon from 'react-native-vector-icons/Ionicons'
 import Ionicons from "react-native-vector-icons/Ionicons";
 import PostCard from '../components/PostCard';
 
-import {Container
-} from '../styles/FeedStyles';
+import {Container} from '../styles/FeedStyles';
 import {Colors, IconButton} from "react-native-paper";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const Posts = [
     {
@@ -74,8 +74,8 @@ const Posts = [
 
 const HomeScreen = ({navigation}) => {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Home Screen</Text>
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Safe Space</Text>
             <IconButton
                 icon="plus"
                 color={Colors.grey600}
@@ -83,7 +83,6 @@ const HomeScreen = ({navigation}) => {
                 onPress={() => navigation.navigate('AddPost')}
                 style={styles.iconStyle}
             />
-
             <Container>
                 <FlatList
                     data={Posts}
@@ -92,7 +91,7 @@ const HomeScreen = ({navigation}) => {
                     showsVerticalScrollIndicator={false}
                 />
             </Container>
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -100,19 +99,20 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#f9fafd',
+        backgroundColor: '#fff',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
     },
-    text: {
-        fontSize: 20,
-        color: '#333333'
+    title: {
+        fontSize: 28,
+        marginTop: 10,
+        color: '#051d5f',
     },
     iconStyle: {
         position: 'absolute',
-        right: 1,
-        top: 1,
+        right: 5,
+        top: 25,
     }
 });
