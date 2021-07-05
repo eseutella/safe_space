@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert, Modal} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, Modal} from "react-native";
 import {Agenda} from "react-native-calendars";
 import {Card} from "react-native-paper";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -7,12 +7,12 @@ import AddEvent from "../components/planner/AddEvent";
 
 const TimetableScreen = () => {
     const [items, setItems] = useState({
-        '2021-06-25': [
+        '2021-07-05': [
             {time: '10:00 AM - 11:00 AM', name: 'Go for a jog'},
             {time: '2:00 PM - 3:00 PM', name: 'Vaccination', description: 'At Tampines Hub'}
         ],
-        '2021-06-26': [{time: '2:00 PM - 4:00 PM', name: 'Project meeting', description: 'On Zoom'}],
-        '2021-06-28': [{time: '6:00 PM - 8:00 PM', name: 'Dinner', description: 'At Orchard'}]
+        '2021-07-06': [{time: '2:00 PM - 4:00 PM', name: 'Project meeting', description: 'On Zoom'}],
+        '2021-07-07': [{time: '6:00 PM - 8:00 PM', name: 'Dinner', description: 'At Orchard'}]
     })
 
     const [visible, setVisible] = useState(false)
