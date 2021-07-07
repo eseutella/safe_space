@@ -24,6 +24,7 @@ const firebaseConfig = {
     measurementId: MEASUREMENT_ID
 };
 
+
 if(!firebase.apps.length){
     firebase.initializeApp(firebaseConfig);
 } else {

@@ -1,19 +1,11 @@
 import React, {useState, useContext} from 'react';
 import {
     View,
-    Text,
-    Button,
     StyleSheet,
-    Alert,
+    Keyboard,
     TouchableWithoutFeedback,
-    TextInput,
-    Platform, ActivityIndicator
+    Alert, Text, ActivityIndicator,
 } from 'react-native';
-import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
-import ImagePicker from 'react-native-image-crop-picker';
-import { Keyboard } from 'react-native'
-
 import {InputField,
     InputWrapper,
     AddImage,
@@ -21,74 +13,79 @@ import {InputField,
     SubmitBtnText,
     StatusWrapper
 } from "../styles/AddPost";
+import firebase from '../api/Firebase';
+import 'firebase/firestore';
+
+const DismissKeyboard = ({ children }) => (
+    <TouchableWithoutFeedback
+        onPress={() => Keyboard.dismiss()}
+    >
+        {children}
+    </TouchableWithoutFeedback>
+);
 
 const AddPostScreen = () => {
+    const user = firebase.auth().currentUser
     const [image, setImage] = useState(null);
+    const [post, setPost] = useState(null);
+    const [transferred, setTransferred] = useState(0);
+    const [uploading, setUploading] = useState(false);
 
-    const takePhotoFromCamera = () => {
-        ImagePicker.openCamera({
-            width: 1200,
-            height: 780,
-            cropping: true,
-        }).then((image) => {
-            console.log(image);
-            const imageUri = Platform.OS === 'ios' ? image.sourceURL : image.path;
-            setImage(imageUri);
-        });
-    };
+    const submitPost = async () => {
+        console.log('Post: ', post);
 
-    const choosePhotoFromLibrary = () => {
-        ImagePicker.openPicker({
-            width: 1200,
-            height: 780,
-            cropping: true,
-        }).then((image) => {
-            console.log(image);
-            const imageUri = Platform.OS === 'ios' ? image.sourceURL : image.path;
-            setImage(imageUri);
-        });
-    };
+        // TODO: check if post is empty here, if not then don't add to firebase and display error message
+
+        firebase.firestore()
+            .collection('posts')
+            .add({
+                userId: user.uid,
+                post: post,
+                postImg: null,
+                postTime: firebase.firestore.Timestamp.fromDate(new Date()),
+                likes: null,
+                comments: null,
+            })
+            .then(() => {
+                console.log('Post Added!');
+                Alert.alert(
+                    'Post published!',
+                    'Your post has been published Successfully!',
+                );
+                setPost(null);
+            })
+            .catch((error) => {
+                console.log('Something went wrong with added post to firestore.', error);
+            });
+    }
 
     return (
-        <View style={styles.container}>
-            <InputWrapper>
-                {image != null ? <AddImage source={{uri: image}} /> : null}
-
-                <InputField
-                    placeholder="What's on your mind?"
-                    multiline
-                    numberOfLines={4}
-                    // value={post}
-                    // onChangeText={(content) => setPost(content)}
-                />
-                {/*{uploading ? (*/}
-                {/*    <StatusWrapper>*/}
-                {/*        <Text>{transferred} % Completed!</Text>*/}
-                {/*        <ActivityIndicator size="large" color="#0000ff" />*/}
-                {/*    </StatusWrapper>*/}
-                {/*) : (*/}
-                {/*    <SubmitBtn onPress={submitPost}>*/}
-                {/*        <SubmitBtnText>Post</SubmitBtnText>*/}
-                {/*    </SubmitBtn>*/}
-                {/*)}*/}
-            </InputWrapper>
-            <ActionButton buttonColor="#2e64e5">
-                <ActionButton.Item
-                    buttonColor="#9b59b6"
-                    title="Take Photo"
-                    onPress={takePhotoFromCamera}>
-                    <Icon name="camera-outline" style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-                <ActionButton.Item
-                    buttonColor="#3498db"
-                    title="Choose Photo"
-                    onPress={choosePhotoFromLibrary}>
-                    <Icon name="md-images-outline" style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-            </ActionButton>
-        </View>
+        <DismissKeyboard>
+            <View style={styles.container}>
+                <InputWrapper>
+                    <InputField
+                        placeholder="What's on your mind?"
+                        multiline
+                        numberOfLines={4}
+                        value={post}
+                        onChangeText={(content) => setPost(content)}
+                    />
+                    {uploading ? (
+                        <StatusWrapper>
+                            <Text>{transferred} % Completed!</Text>
+                            <ActivityIndicator size="large" color="#0000ff" />
+                        </StatusWrapper>
+                    ) : (
+                        <SubmitBtn onPress={submitPost}>
+                            <SubmitBtnText>Post</SubmitBtnText>
+                        </SubmitBtn>
+                    )}
+                </InputWrapper>
+            </View>
+        </DismissKeyboard>
     );
 };
+
 
 export default AddPostScreen;
 
