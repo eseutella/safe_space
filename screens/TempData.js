@@ -1,4 +1,4 @@
-export default TempData = [
+export const TempData = [
     {
         id: 1,
         name: "Plan a Trip",
