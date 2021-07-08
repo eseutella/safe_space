@@ -69,7 +69,7 @@ const RegisterScreen = () => {
     }
 
     const handleConfirmPasswordChange = (val) => {
-        if( data.password == val ) {
+        if( data.password === val ) {
             setData({
                 ...data,
                 confirmPassword: val,
@@ -99,8 +99,8 @@ const RegisterScreen = () => {
     }
 
     const register = () => {
-        if (data.username.length == 0 || data.email.length == 0
-        || data.password.length == 0 || data.confirmPassword.length == 0) {
+        if (data.username.length === 0 || data.email.length === 0
+        || data.password.length === 0 || data.confirmPassword.length === 0) {
             Alert.alert('Error!', 'There are empty fields.', [
                 {text: 'Okay'}
             ]);
@@ -126,10 +126,9 @@ const RegisterScreen = () => {
                 .then(() => {
                     const user = firebase.auth().currentUser;
                     user.updateProfile({displayName: data.username})
-                })
-                .then(() => {
-                    const user = firebase.auth().currentUser;
-                    firebase.firestore().collection("users").doc(user.uid).set({});
+                    Alert.alert('Success!', 'Your account has been successfully created!', [
+                        {text: 'Okay'}
+                    ])
                 })
                 .catch(() => {
                     Alert.alert('Error!', 'The email address is already in use by another account.', [

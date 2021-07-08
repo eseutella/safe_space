@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity, Alert} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import TempData from "../../screens/TempData";
+import firebase from "../../api/Firebase";
 
-const AddList = ({closeModal, list, addList}) => {
+const AddList = ({closeModal, list}) => {
     const backgroundColors = ["#a84b19", "#D88559", "#D85963", "#D159D8", "#8022D9", "#595BD9", "#24A6D9", "#5CD859"]
     const [data, setData] = useState({
         name: '',
@@ -24,34 +24,36 @@ const AddList = ({closeModal, list, addList}) => {
     };
 
     const createTodoList = () => {
-        const {name, color} = data
+        if (data.name === '') {
+            Alert.alert('Error!', 'Please input list name', [
+                {text: 'Okay'}
+            ]);
+        } else if (list.length > 0 && list.some(list => list.name === data.name)) {
+            Alert.alert('Error!', 'List already exists',
+                [{text: 'Okay'}]
+            )
+        } else {
+            firebase.firestore().collection('lists').add({
+                userId: firebase.auth().currentUser.uid,
+                name: data.name,
+                color: data.color,
+                tasks: []
+            })
+                .then(() => {
+                    Alert.alert('Success!', 'List successfully added.', [{text: 'Okay'}])
+                })
 
-        if (!list.some(list => list.name === data.name)){
-            list.push({
-                name,
-                color,
-                tasks: [],
-                id: list.length + 1
-            });
-
-            addList(list);
-
-            Alert.alert('Success!', 'List successfully added.',
+/*            Alert.alert('Success!', 'List successfully added.',
                 [
                     {text: 'Okay', onPress: () => closeModal()},
                     {text: 'Add new list'}
                 ]
-            );
-        } else {
-            Alert.alert('Error!', 'List already exists', [
-                {text: 'Okay'}
-            ]);
+            );*/
+            setData({
+                ...data,
+                name: ''
+            });
         }
-
-        setData({
-            ...data,
-            name: ''
-        });
     };
 
     return (
