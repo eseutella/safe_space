@@ -10,15 +10,14 @@ https://docs.google.com/document/d/1VVSCbGfbWt_C23wbLXxo1WN4o_vLDGjc7QqPKWJH31g/
 * [npm](https://nodejs.org/en/) (installing NodeJS LTS client also installs npm by default, macOS users can install NodeJS using the command `brew install node` instead) or [Yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
 * A Firebase account 
 * [Expo Go](https://expo.io/tools#client)
-* expo-cli
-  * install using the command `npm install expo-cli --global` or `yarn global add expo-cli`
+* expo-cli: install using the command `npm install expo-cli --global` or `yarn global add expo-cli`
 ### Setting up
 1. Clone this respository `https://github.com/eseutella/safe_space.git`
 2. Change the directory into the project root using `cd safe_space`
 3. Install all dependencies using either `npm install` or `yarn install`
 4. Create a new [Firebase](https://firebase.google.com/) project (we have used a web application for this project)
 5. Create a `.env` file in the root project directory.
-6. Add Firebase configuration info (which can be found under project settings in your Firebase project) as follows:
+6. Add Firebase configuration info (which can be found under project settings in your Firebase project) into your .env file as follows:
 ```
 API_KEY=<your firebaseConfig apiKey>
 AUTH_DOMAIN=<your firebaseConfig authDomain>
