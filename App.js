@@ -81,22 +81,22 @@ const Screens = () => {
                 })}
             />
             <Stack.Screen
-                name="AddPost"
-                component={AddPostScreen}
-                options={({navigation}) => ({
-                    title: 'Create New Post',
-                    headerLeft: () => (
-                        <View style={{marginLeft: 10}}>
-                            <FontAwesome.Button
-                                name="angle-left"
-                                size={25}
-                                backgroundColor="#fff"
-                                color="#333"
-                                onPress={() => navigation.navigate('MainTab')}
-                            />
-                        </View>
-                    ),
-                })}
+                    name="AddPost"
+                    component={AddPostScreen}
+                    options={({navigation}) => ({
+                        title: 'Create New Post',
+                        headerLeft: () => (
+                            <View style={{marginLeft: 10}}>
+                                <FontAwesome.Button
+                                    name="angle-left"
+                                    size={25}
+                                    backgroundColor="#fff"
+                                    color="#333"
+                                    onPress={() => navigation.navigate('MainTab')}
+                                />
+                            </View>
+                        ),
+                    })}
             />
         </Stack.Navigator>
     )
