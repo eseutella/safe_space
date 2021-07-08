@@ -56,7 +56,7 @@ const LoginScreen = ({navigation}) => {
     }
 
     const login = () => {
-        if (data.email.length == 0 || data.password.length == 0) {
+        if (data.email.length === 0 || data.password.length === 0) {
             Alert.alert('Error!', 'Email or Password cannot be empty.', [
                 {text: 'Okay'}
             ]);

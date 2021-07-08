@@ -5,7 +5,6 @@ import {
     StyleSheet,
     TouchableOpacity,
     TextInput,
-    SafeAreaView,
     FlatList,
     KeyboardAvoidingView,
     Platform,
@@ -14,38 +13,65 @@ import {
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import Entypo from "react-native-vector-icons/Entypo";
+import firebase from "../../api/Firebase";
 
-const TodoTask = ({list, closeModal, updateList}) => {
+const TodoTask = ({list, closeModal}) => {
     const [data, setData] = useState({
-        newTask: ""
+        newTask: "",
+        clearInput: false
     });
 
     const completedCount = list.tasks.filter(task => task.completed).length;
     const taskCount = list.tasks.length
 
+    const listRef = firebase.firestore().collection('lists').doc(list.id)
+
     const toggleTaskCompleted = (index) => {
         list.tasks[index].completed = !list.tasks[index].completed;
-        updateList(list);
+        listRef.update({tasks: list.tasks.sort(compare)})
     }
 
     const addTask = () => {
-        if (!list.tasks.some(task => task.title === data.newTask)){
-            list.tasks.push({title: data.newTask, completed: false})
-            updateList(list)
-        } else {
-            Alert.alert('Error!', 'Task already exists', [
+        if (data.newTask === '') {
+            Alert.alert('Error!', 'Please input task name', [
                 {text: 'Okay'}
             ]);
+        } else if (list.tasks.length > 0 && list.tasks.some(task => task.title === data.newTask)) {
+            Alert.alert('Error!', 'Task already exists',
+                [{text: 'Okay'}]
+            )
+        } else {
+            list.tasks.push({title: data.newTask, completed: false})
+
+            listRef.update({tasks: list.tasks.sort(compare)})
+
+            setData({...data, newTask: ""})
+
+            Keyboard.dismiss()
         }
+    };
 
-        setData({...data, newTask: ""})
-
-        Keyboard.dismiss()
+    const compare = (a, b) => {
+        if (a.completed && !b.completed){
+            return 1;
+        }
+        if (!a.completed && b.completed){
+            return -1;
+        }
+        else {
+            if (a.title < b.title){
+                return -1;
+            }
+            if (a.title > b.title){
+                return 1;
+            }
+            return 0;
+        }
     }
 
     const deleteTask = (index) => {
         list.tasks.splice(index, 1);
-        updateList(list);
+        listRef.update({tasks: list.tasks})
     }
 
     const renderTodo = (task, index) => {
@@ -89,7 +115,7 @@ const TodoTask = ({list, closeModal, updateList}) => {
             style={{flex:1}}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                     <AntDesign
                         name="close"
@@ -105,12 +131,12 @@ const TodoTask = ({list, closeModal, updateList}) => {
                         </Text>
                     </View>
                 </View>
-                <View style={[styles.section, {flex: 3}]}>
+                <View style={[styles.section, {flex: 3, marginVertical: 16}]}>
                     <FlatList
                         data={list.tasks}
                         renderItem={({item, index}) => renderTodo(item, index)}
                         keyExtractor={item => item.title}
-                        contentContainerStyle={{paddingHorizontal: 32, paddingVertical: 64}}
+                        contentContainerStyle={{paddingHorizontal: 32}}
                         showsVerticalScrollIndicator={false}
                     />
                 </View>
@@ -122,7 +148,8 @@ const TodoTask = ({list, closeModal, updateList}) => {
                         placeholder="Task name"
                         placeholderTextColor="#666"
                         onChangeText={(text) => setData({...data, newTask: text})}
-                        value={data.newTask}
+                        value={!data.clearInput ? data.newTask : null}
+                        onSubmitEditing={() => setData({...data, clearInput: !data.clearInput})}
                     />
                     <TouchableOpacity
                         style={[styles.addTask, {backgroundColor: list.color}]}
@@ -135,7 +162,7 @@ const TodoTask = ({list, closeModal, updateList}) => {
                         />
                     </TouchableOpacity>
                 </View>
-            </SafeAreaView>
+            </View>
         </KeyboardAvoidingView>
     );
 };
@@ -148,7 +175,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
     },
     todoContainer: {
         paddingVertical: 16,
@@ -167,7 +193,7 @@ const styles = StyleSheet.create({
     },
     header: {
         justifyContent: 'flex-end',
-        marginLeft: 64,
+        marginLeft: 50,
         borderBottomWidth: 3
     },
     title: {

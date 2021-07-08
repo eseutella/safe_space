@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
+import firebase from "../api/Firebase";
 
 const ProfileScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Profile Screen</Text>
+            <Text style={styles.text}>Welcome {firebase.auth().currentUser.displayName}!</Text>
             <IconButton
                 icon="dots-horizontal"
                 color={Colors.grey600}

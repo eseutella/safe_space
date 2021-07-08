@@ -1,14 +1,20 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Modal} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, Modal, Alert} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import TodoTask from "./TodoTask";
-import AddList from "./AddList";
+import firebase from "../../api/Firebase";
 
-const TodoList = ({list, updateList, deleteList}) => {
+const TodoList = ({list}) => {
     const [state, setState] = useState(false);
 
     const completedCount = list.tasks.filter(task => task.completed).length;
     const remainingCount = list.tasks.length - completedCount;
+
+    const listRef = firebase.firestore().collection('lists').doc(list.id)
+
+    const deleteList = () => {
+        listRef.delete()
+    }
 
     return (
         <View>
@@ -20,7 +26,6 @@ const TodoList = ({list, updateList, deleteList}) => {
                 <TodoTask
                     list={list}
                     closeModal={() => setState(!state)}
-                    updateList={updateList}
                 />
             </Modal>
             <TouchableOpacity
@@ -42,7 +47,12 @@ const TodoList = ({list, updateList, deleteList}) => {
                 </View>
                 <TouchableOpacity
                     style={styles.iconStyle}
-                    onPress={deleteList}
+                    onPress={() => Alert.alert('Alert!','Are you sure you want to delete the list?',
+                        [
+                            {text: 'Yes', onPress: () => deleteList()},
+                            {text: 'No'}
+                        ])
+                    }
                 >
                     <AntDesign
                         name="delete"
