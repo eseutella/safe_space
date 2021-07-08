@@ -3,7 +3,7 @@
 ### Introduction
 We are a team of 2 members, Estella and Zhiao Wei, who have come together to develop a mobile application called Safe Space. Safe Space aims to enforce the importance of taking care of your mental health above your studies. We have developed features which can help users to cope with stress better to be healthier not only physically, but also mentally. 
 ### Tech Stack
-Safe Space is developed using React Naive with Expo, Firebase Authentication and Firestore Database
+Safe Space is developed using React Naive with Expo, Firebase Authentication and Firestore Database.
 ### Project Documentation
 https://docs.google.com/document/d/1VVSCbGfbWt_C23wbLXxo1WN4o_vLDGjc7QqPKWJH31g/edit?usp=sharing
 ### Development environment pre-requisites
@@ -16,7 +16,7 @@ https://docs.google.com/document/d/1VVSCbGfbWt_C23wbLXxo1WN4o_vLDGjc7QqPKWJH31g/
 2. Change the directory into the project root using `cd safe_space`
 3. Install all dependencies using either `npm install` or `yarn install`
 4. Create a new [Firebase](https://firebase.google.com/) project (we have used a web application for this project)
-5. Create a `.env` file in the root project directory.
+5. Create a `.env` file in the root project directory
 6. Add Firebase configuration info (which can be found under project settings in your Firebase project) into your .env file as follows:
 ```
 API_KEY=<your firebaseConfig apiKey>
