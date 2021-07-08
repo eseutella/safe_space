@@ -28,7 +28,7 @@ const TodoTask = ({list, closeModal}) => {
 
     const toggleTaskCompleted = (index) => {
         list.tasks[index].completed = !list.tasks[index].completed;
-        listRef.update({tasks: list.tasks})
+        listRef.update({tasks: list.tasks.sort(compare)})
     }
 
     const addTask = () => {
@@ -43,13 +43,31 @@ const TodoTask = ({list, closeModal}) => {
         } else {
             list.tasks.push({title: data.newTask, completed: false})
 
-            listRef.update({tasks: list.tasks})
+            listRef.update({tasks: list.tasks.sort(compare)})
 
             setData({...data, newTask: ""})
 
             Keyboard.dismiss()
         }
     };
+
+    const compare = (a, b) => {
+        if (a.completed && !b.completed){
+            return 1;
+        }
+        if (!a.completed && b.completed){
+            return -1;
+        }
+        else {
+            if (a.title < b.title){
+                return -1;
+            }
+            if (a.title > b.title){
+                return 1;
+            }
+            return 0;
+        }
+    }
 
     const deleteTask = (index) => {
         list.tasks.splice(index, 1);

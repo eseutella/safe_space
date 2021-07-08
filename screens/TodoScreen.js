@@ -16,15 +16,25 @@ const TodoScreen = () => {
     const getList = () => {
         listRef
             .where('userId', '==', firebase.auth().currentUser.uid.toString())
-            //.orderBy('name', 'asc')
             .onSnapshot((snapshot) => {
                 const list = [];
                 snapshot.forEach((doc) => {
                     list.push({id: doc.id, ...doc.data()})
                 })
-            setData({...data, lists: list})
+            setData({...data, lists: list.sort(compare)})
         })
     }
+
+    const compare = (a, b) => {
+        if (a.name < b.name){
+            return -1;
+        }
+        if (a.name > b.name){
+            return 1;
+        }
+        return 0;
+    }
+
 
     useEffect(() => {
         getList();
