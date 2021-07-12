@@ -24,9 +24,8 @@ const DismissKeyboard = ({ children }) => (
     </TouchableWithoutFeedback>
 );
 
-const AddPostScreen = () => {
+const AddPostScreen = ({navigation}) => {
     const user = firebase.auth().currentUser
-    const [image, setImage] = useState(null);
     const [post, setPost] = useState(null);
     const [transferred, setTransferred] = useState(0);
     const [uploading, setUploading] = useState(false);
@@ -34,29 +33,40 @@ const AddPostScreen = () => {
     const submitPost = async () => {
         console.log('Post: ', post);
 
-        // TODO: check if post is empty here, if not then don't add to firebase and display error message
-
-        firebase.firestore()
-            .collection('posts')
-            .add({
-                userId: user.uid,
-                post: post,
-                postImg: null,
-                postTime: firebase.firestore.Timestamp.fromDate(new Date()),
-                likes: null,
-                comments: null,
-            })
-            .then(() => {
-                console.log('Post Added!');
-                Alert.alert(
-                    'Post published!',
-                    'Your post has been published Successfully!',
-                );
-                setPost(null);
-            })
-            .catch((error) => {
-                console.log('Something went wrong with added post to firestore.', error);
-            });
+        // TODO: check if post is empty here, if not then don't add to firebase and
+        //  display error message
+        if (post == null) {
+            console.log('Post is empty!!');
+            Alert.alert(
+                'Post cannot be published!',
+                'Your post cannot be empty!',
+            );
+        } else {
+            firebase.firestore()
+                .collection('posts')
+                .add({
+                    userId: user.uid,
+                    post: post,
+                    postImg: null,
+                    postTime: firebase.firestore.Timestamp.fromDate(new Date()),
+                    likes: null,
+                    comments: null,
+                })
+                .then(() => {
+                    console.log('Post Added!');
+                    Alert.alert(
+                        'Post published!',
+                        'Your post has been published Successfully!',
+                    );
+                    setPost(null);
+                    setUploading(true);
+                    setTransferred(0);
+                    navigation.navigate('MainTab')
+                })
+                .catch((error) => {
+                    console.log('Something went wrong with added post to firestore.', error);
+                });
+        }
     }
 
     return (

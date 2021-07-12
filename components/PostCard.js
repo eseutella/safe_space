@@ -12,12 +12,15 @@ import {
     UserName
 } from "../styles/FeedStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import firebase from "../api/Firebase";
+import moment from 'moment';
 
-const PostCard = ({item}) => {
+const PostCard = ({item, onDelete, onLiked, onComment}) => {
 
     let likeIcon, likeIconColor, commentText, likeText;
     likeIcon = item.liked ? 'heart' : 'heart-outline';
     likeIconColor = item.liked ? '#2e64e5' : '#333';
+    const user = firebase.auth().currentUser;
 
     if (item.likes == 1) {
         likeText = '1 Like';
@@ -41,21 +44,26 @@ const PostCard = ({item}) => {
                 <UserImg source={item.userImg} />
                 <UserInfoText>
                     <UserName>{item.userName}</UserName>
-                    <PostTime>{item.postTime}</PostTime>
+                    <PostTime>{moment(item.postTime.toDate()).fromNow()}</PostTime>
                 </UserInfoText>
             </UserInfo>
             <PostText>{item.post}</PostText>
-            {item.postImg != 'none' ? <PostImg source={item.postImg} /> : <Divider/>}
+            {item.postImg != null ? <PostImg source={item.postImg} /> : <Divider/>}
 
             <InteractionWrapper>
-                <Interaction active={item.liked}>
+                <Interaction onPress={() => onLiked(item.id)}>
                     <Ionicons name={likeIcon} size={25} color={likeIconColor} />
                     <InteractionText active={item.liked}>{likeText}</InteractionText>
                 </Interaction>
-                <Interaction>
+                <Interaction onPress={() => onComment(item.id)}>
                     <Ionicons name="md-chatbubble-outline" size={25} />
                     <InteractionText>{commentText}</InteractionText>
                 </Interaction>
+                {firebase.auth().currentUser.uid == item.userId ?
+                <Interaction onPress={() => onDelete(item.id)}>
+                    <Ionicons name="md-trash-bin" size={25} />
+                </Interaction>
+                    : null}
             </InteractionWrapper>
         </Card>
     )
