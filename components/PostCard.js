@@ -22,13 +22,16 @@ const PostCard = ({item, onDelete, onLiked, onComment}) => {
     likeIconColor = item.liked ? '#2e64e5' : '#333';
     const user = firebase.auth().currentUser;
 
-    if (item.likes == 1) {
-        likeText = '1 Like';
-    } else if (item.likes > 1) {
-        likeText = item.likes + ' Likes';
-    } else {
+    // item is the post object retrieved from database
+    const hasLike = item.likes.length >= 1;
+
+    if (item.likes.length === 0) {
         likeText = 'Like';
+    } else {
+        likeText = item.likes.length + ' Likes';
     }
+
+    // TODO: do the same for comments
 
     if (item.comments == 1) {
         commentText = '1 Comment';
@@ -51,9 +54,9 @@ const PostCard = ({item, onDelete, onLiked, onComment}) => {
             {item.postImg != null ? <PostImg source={item.postImg} /> : <Divider/>}
 
             <InteractionWrapper>
-                <Interaction onPress={() => onLiked(item.id)}>
+                <Interaction onPress={() => onLiked(item.id)} active={hasLike}>
                     <Ionicons name={likeIcon} size={25} color={likeIconColor} />
-                    <InteractionText active={item.liked}>{likeText}</InteractionText>
+                    <InteractionText active={hasLike}>{likeText}</InteractionText>
                 </Interaction>
                 <Interaction onPress={() => onComment(item.id)}>
                     <Ionicons name="md-chatbubble-outline" size={25} />

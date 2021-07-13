@@ -12,8 +12,6 @@ const HomeScreen = ({navigation}) => {
     const [posts, setPosts] = useState(null);
     const [deleted, setDeleted] = useState(false);
     const [refreshing, setRefreshing] = React.useState(false);
-    const [likes, setLiked] = useState(null);
-    const [comments, setComment] = useState(null);
 
     useEffect(() => {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -33,7 +31,6 @@ const HomeScreen = ({navigation}) => {
                 .orderBy('postTime', 'desc')
                 .get()
                 .then((querySnapshot) => {
-                    // console.log('Total Posts: ', querySnapshot.size);
 
                     querySnapshot.forEach((doc) => {
                         const {userId, post, postImg, postTime, likes, comments} = doc.data();
@@ -54,7 +51,6 @@ const HomeScreen = ({navigation}) => {
 
             setPosts(list);
             setRefreshing(false);
-            console.log('Posts: ', posts);
         } catch (e) {
             console.log(e);
         }
@@ -64,32 +60,30 @@ const HomeScreen = ({navigation}) => {
         fetchPosts();
     }, []);
 
-    // useEffect(() => {
-    //     fetchPosts();
-    //     setDeleted(false);
-    // }, [deleted]);
-
     const handleLike = async (postId) => {
-        console.log("liked");
-        try {
-        const postLikes = [];
+        const db = firebase.firestore()
+            .collection('posts')
+            .doc(postId);
+        const userId = firebase.auth().currentUser.uid;
 
-        // TODO: store the likes in post database instead
-        // TODO: store a list of userId in the likes field
-        // TODO: to count for likes, count the number of items in that likes field
-        // TODO: pre-process the data (count for likes) before passing to the screens (figure out where to do this)
-        // TODO: after getting likes work, do profile!!!
-        await firebase.firestore()
-            .collection('postLikes')
-            .add({
-                userId: firebase.auth().currentUser.uid,
-                postID: postId,
-                likeCount: null,
-            })
-    } catch (e) {
-        console.log(e);
-    }
-};
+        db.get().then((snapshot) => {
+            // list of likes from the firebase
+            let likelist = snapshot.get("likes");
+            if (!Array.isArray(likelist)) {
+                likelist = [];
+            }
+
+            // current user who likes the post has already liked it before
+            if (likelist.find(id => id === userId)) {
+                likelist = likelist.filter(id => id !== userId);  // remove current user from likelist
+            } else {
+                likelist.push(userId);
+            }
+
+            db.update({likes: likelist});
+        });
+    };
+
 
     const handleComment = (postId) => {
         console.log("commented");
