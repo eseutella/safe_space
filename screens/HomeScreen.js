@@ -12,6 +12,7 @@ const HomeScreen = ({navigation}) => {
     const [posts, setPosts] = useState(null);
     const [deleted, setDeleted] = useState(false);
     const [refreshing, setRefreshing] = React.useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -58,7 +59,8 @@ const HomeScreen = ({navigation}) => {
 
     useEffect(() => {
         fetchPosts();
-    }, []);
+        navigation.addListener("focus", () => setLoading(!loading));
+    }, [navigation, loading]);
 
     const handleLike = async (postId) => {
         const db = firebase.firestore()

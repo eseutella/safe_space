@@ -31,10 +31,7 @@ const AddPostScreen = ({navigation}) => {
     const [uploading, setUploading] = useState(false);
 
     const submitPost = async () => {
-        console.log('Post: ', post);
 
-        // TODO: check if post is empty here, if not then don't add to firebase and
-        //  display error message
         if (post == null) {
             console.log('Post is empty!!');
             Alert.alert(
@@ -49,8 +46,8 @@ const AddPostScreen = ({navigation}) => {
                     post: post,
                     postImg: null,
                     postTime: firebase.firestore.Timestamp.fromDate(new Date()),
-                    likes: null,
-                    comments: null,
+                    likes: [],
+                    comments: [],
                 })
                 .then(() => {
                     console.log('Post Added!');

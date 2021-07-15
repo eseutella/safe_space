@@ -125,7 +125,25 @@ const RegisterScreen = () => {
                 .createUserWithEmailAndPassword(data.email, data.password)
                 .then(() => {
                     const user = firebase.auth().currentUser;
-                    user.updateProfile({displayName: data.username})
+                    user.updateProfile({displayName: data.username});
+                    try {
+                        firebase.firestore()
+                            .collection("users")
+                            .doc(user.uid)
+                            .set({
+                                username: data.username,
+                                phone: '',
+                                aboutMe: '',
+                                createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+                                userImg: null
+                            })
+                            .then(() => {
+                                console.log("User Data successfully written!");
+                            })
+                    } catch (error) {
+                            console.log("Something went wrong with adding user to firebase")
+                    }
+
                     Alert.alert('Success!', 'Your account has been successfully created!', [
                         {text: 'Okay'}
                     ])

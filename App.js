@@ -6,6 +6,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import MainTabScreen from "./screens/MainTabScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import AddPostScreen from "./screens/AddPostScreen";
+import EditProfileScreen from "./screens/EditProfileScreen";
 import HomeScreen from "./screens/HomeScreen";
 import {View} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -67,6 +68,24 @@ const Screens = () => {
                         shadowColor: '#f9fafd',
                         elevation: 0,
                     },
+                    headerLeft: () => (
+                        <View style={{marginLeft: 10}}>
+                            <FontAwesome.Button
+                                name="angle-left"
+                                size={25}
+                                backgroundColor="#fff"
+                                color="#333"
+                                onPress={() => navigation.navigate('Profile')}
+                            />
+                        </View>
+                    ),
+                })}
+            />
+            <Stack.Screen
+                name="EditProfile"
+                component={EditProfileScreen}
+                options={({navigation}) => ({
+                    title: 'Edit Profile',
                     headerLeft: () => (
                         <View style={{marginLeft: 10}}>
                             <FontAwesome.Button
