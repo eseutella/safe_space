@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Modal} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, Modal, Alert} from "react-native";
 import {Agenda} from "react-native-calendars";
 import {Card} from "react-native-paper";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -60,6 +60,21 @@ const TimetableScreen = () => {
                             <Text style={styles.name}>{item.name}</Text>
                             <Text style={styles.description}>{item.description}</Text>
                         </View>
+                        <TouchableOpacity
+                            style={styles.iconStyle}
+                            onPress={() => Alert.alert('Alert!','Are you sure you want to delete the event?',
+                                [
+                                    {text: 'Yes', onPress: () => {}},
+                                    {text: 'No'}
+                                ])
+                            }
+                        >
+                            <AntDesign
+                                name="delete"
+                                size={28}
+                                color="#000000"
+                            />
+                        </TouchableOpacity>
                     </Card.Content>
                 </Card>
             </View>
@@ -160,5 +175,10 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: 'grey',
         marginTop: 5
+    },
+    iconStyle: {
+        position: 'absolute',
+        bottom: 10,
+        right: 10
     }
 });
