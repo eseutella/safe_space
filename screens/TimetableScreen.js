@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Modal, Alert} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, Modal, Alert, SafeAreaView} from "react-native";
 import {Agenda} from "react-native-calendars";
 import {Card} from "react-native-paper";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -37,15 +37,9 @@ const TimetableScreen = () => {
                 const strTime = timeToString(time);
                 if (!items[strTime]) {
                     items[strTime] = [];
-/*                    const numItems = Math.floor(Math.random() * 3 + 1);
-                    for (let j = 0; j < numItems; j++) {
-                        items[strTime].push({
-                            name: 'Item for ' + strTime + ' #' + j,
-                            height: Math.max(50, Math.floor(Math.random() * 150))
-                        });
-                    }*/
                 }
             }
+            console.log(items)
             const newItems = {};
             Object.keys(items).forEach(key => {
                 newItems[key] = items[key];
@@ -55,28 +49,24 @@ const TimetableScreen = () => {
     }
 
 /*    const loadItems = () => {
-        setTimeout(() => {
-            eventRef
-                .where('userId', '==', firebase.auth().currentUser.uid.toString())
-                .onSnapshot((snapshot) => {
-                    snapshot.forEach((doc) => {
-                        if (!items[doc.date]) {
-                            items[doc.date] = [];
-                        }
-                        items[doc.date].push({
-                            startTime: doc.startTime,
-                            endTime: doc.endTime,
-                            name: doc.name,
-                            description: doc.description
-                        })
+        eventRef
+            .where('userId', '==', firebase.auth().currentUser.uid.toString())
+            .onSnapshot((snapshot) => {
+                //const item = {};
+                snapshot.forEach((doc) => {
+                    if (!items[doc.date]) {
+                        items[doc.date] = [];
+                    }
+                    items[doc.date].push({
+                        startTime: doc.startTime,
+                        endTime: doc.endTime,
+                        name: doc.name,
+                        description: doc.description
                     })
                 })
-            const newItems = {};
-            Object.keys(items).forEach(key => {
-                newItems[key] = items[key];
-            });
-            setItems(newItems)
-        }, 1000);
+                console.log(items)
+                setItems(items)
+            })
     }*/
 
     const renderItem = (item) => {
@@ -125,7 +115,7 @@ const TimetableScreen = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Modal
                 animationType='slide'
                 visible={visible}
@@ -153,7 +143,7 @@ const TimetableScreen = () => {
                     color="#fff"
                 />
             </TouchableOpacity>
-        </View>
+        </SafeAreaView>
     );
 };
 

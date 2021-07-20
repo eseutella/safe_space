@@ -3,9 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from "./HomeScreen";
-import PlannerScreen from "./PlannerScreen";
-import TrackerScreen from "./TrackerScreen";
-import MusicScreen from "./MusicScreen";
+import TodoScreen from "./TodoScreen"
+import TimetableScreen from "./TimetableScreen";
 import ProfileScreen from "./ProfileScreen";
 
 const Tab = createBottomTabNavigator();
@@ -29,44 +28,34 @@ const MainTabScreen = () => {
                 }}
             />
             <Tab.Screen
-                name="Planner"
-                component={PlannerScreen}
+                name="Todo-List"
+                component={TodoScreen}
                 options={{
-                    tabBarLabel: 'Planner',
+                    tabBarLabel: 'Todo-List',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="notebook" color={color} size={size} />
                     ),
                 }}
             />
             <Tab.Screen
-                name="Tracker"
-                component={TrackerScreen}
+                name="Timetable"
+                component={TimetableScreen}
                 options={{
-                    tabBarLabel: 'Tracker',
+                    tabBarLabel: 'Timetable',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="calendar-month" color={color} size={size} />
                     ),
                 }}
             />
             <Tab.Screen
-                name="Music"
-                component={MusicScreen}
-                options={{
-                    tabBarLabel: 'Music',
-                    tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="music" color={color} size={size} />
-                    ),
-                }}
-            />
-            <Tab.Screen
                 name="Profile"
                 component={ProfileScreen}
-                options={({navigation}) => ({
+                options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="account" color={color} size={size} />
                     ),
-                })}
+                }}
             />
         </Tab.Navigator>
     );
