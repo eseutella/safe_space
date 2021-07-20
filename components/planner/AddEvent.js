@@ -4,10 +4,12 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
 import * as Animatable from "react-native-animatable";
+import firebase from "../../api/Firebase";
 
 const AddEvent = ({closeModal}) => {
     const [data, setData] = useState({
         date: '',
+        formattedDate: '',
         startTime: '',
         unformattedStartTime: '',
         endTime: '',
@@ -46,7 +48,8 @@ const AddEvent = ({closeModal}) => {
         if (mode === 'date') {
             setData({
                 ...data,
-                date: moment(date).format('MMMM Do YYYY')
+                date: moment(date).format().split('T')[0],
+                formattedDate: moment(date).format('MMMM Do YYYY')
             })
         } else {
             if (startTime === 'true') {
@@ -72,6 +75,45 @@ const AddEvent = ({closeModal}) => {
             }
         }
         hideDatePicker();
+    };
+
+    const createEvent = () => {
+        if (data.formattedDate === '' || data.startTime === '' || data.endTime === ''
+            || data.eventName === '' || data.eventDescription === '') {
+            Alert.alert('Error!', 'There are empty fields', [
+                {text: 'Okay'}
+            ]);
+        } else if (!data.isValidEndTime) {
+            Alert.alert('Error!', 'End time must be after start time.',
+                [{text: 'Okay'}]
+            )
+        } else {
+            firebase.firestore().collection('lists').add({
+                userId: firebase.auth().currentUser.uid,
+                date: data.date,
+                startTime: data.startTime,
+                endTime: data.endTime,
+                name: data.eventName,
+                description: data.eventDescription
+            })
+                .then(() => {
+                    Alert.alert('Success!', 'Event successfully added.',
+                        [
+                            {text: 'Okay', onPress: () => closeModal()},
+                            {text: 'Add new event'}
+                        ]
+                    )
+                })
+
+            setData({
+                ...data,
+                formattedDate: '',
+                startTime: '',
+                endTime: '',
+                eventName: '',
+                eventDescription: ''
+            });
+        }
     };
 
     return (
@@ -108,7 +150,7 @@ const AddEvent = ({closeModal}) => {
                 <View style={styles.textInput}>
                     <Text style={styles.textInputTitle}>Date: </Text>
                     <TouchableOpacity style={styles.textInputContent} onPress={showDatePicker}>
-                        <Text style={styles.textInputContent}>{data.date}</Text>
+                        <Text style={styles.textInputContent}>{data.formattedDate}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -139,7 +181,7 @@ const AddEvent = ({closeModal}) => {
                 </View>
                 <TouchableOpacity
                     style={styles.createButton}
-                    onPress={() => {}}
+                    onPress={() => createEvent()}
                 >
                     <Text style={{color: '#fff', fontWeight: '600'}}>Create</Text>
                 </TouchableOpacity>
