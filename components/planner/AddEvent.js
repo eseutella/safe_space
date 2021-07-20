@@ -15,7 +15,8 @@ const AddEvent = ({closeModal}) => {
         endTime: '',
         eventName: '',
         eventDescription: '',
-        isValidEndTime: true
+        isValidEndTime: true,
+        clearInput: false
     })
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [mode, setMode] = useState('date');
@@ -78,8 +79,7 @@ const AddEvent = ({closeModal}) => {
     };
 
     const createEvent = () => {
-        if (data.formattedDate === '' || data.startTime === '' || data.endTime === ''
-            || data.eventName === '' || data.eventDescription === '') {
+        if (data.formattedDate === '' || data.startTime === '' || data.endTime === '' || data.eventName === '') {
             Alert.alert('Error!', 'There are empty fields', [
                 {text: 'Okay'}
             ]);
@@ -88,7 +88,7 @@ const AddEvent = ({closeModal}) => {
                 [{text: 'Okay'}]
             )
         } else {
-            firebase.firestore().collection('lists').add({
+            firebase.firestore().collection('events').add({
                 userId: firebase.auth().currentUser.uid,
                 date: data.date,
                 startTime: data.startTime,
@@ -144,6 +144,8 @@ const AddEvent = ({closeModal}) => {
                     <TextInput
                         style={styles.textInputContent}
                         onChangeText={(text) => setData({...data, eventName: text})}
+                        value={!data.clearInput ? data.eventName : null}
+                        onSubmitEditing={() => setData({...data, clearInput: !data.clearInput})}
                     />
                 </View>
 
@@ -177,6 +179,8 @@ const AddEvent = ({closeModal}) => {
                     <TextInput
                         style={styles.textInputContent}
                         onChangeText={(text) => setData({...data, eventDescription: text})}
+                        value={!data.clearInput ? data.eventDescription : null}
+                        onSubmitEditing={() => setData({...data, clearInput: !data.clearInput})}
                     />
                 </View>
                 <TouchableOpacity

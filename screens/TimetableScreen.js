@@ -7,37 +7,19 @@ import AddEvent from "../components/planner/AddEvent";
 import firebase from "../api/Firebase";
 
 const TimetableScreen = () => {
-    const [items, setItems] = useState({
-/*        '2021-07-05': [
-            {time: '10:00 AM - 11:00 AM', name: 'Go for a jog'},
-            {time: '2:00 PM - 3:00 PM', name: 'Vaccination', description: 'At Tampines Hub'}
-        ],
-        '2021-07-06': [{time: '2:00 PM - 4:00 PM', name: 'Project meeting', description: 'On Zoom'}],
-        '2021-07-07': [{time: '6:00 PM - 8:00 PM', name: 'Dinner', description: 'At Orchard'}]*/
-    })
+    const [items, setItems] = useState(
+        {
+            '2021-07-23': [
+                {startTime: '10:00 AM', endTime: '11:00 AM', name: 'Go for a jog'},
+                {startTime: '2:00 PM', endTime: '3:00 PM', name: 'Vaccination', description: 'At Tampines Hub'}
+            ],
+            '2021-07-24': [{startTime: '2:00 PM', endTime: '4:00 PM', name: 'Project meeting', description: 'On Zoom'}],
+            '2021-07-25': [{startTime: '6:00 PM', endTime: '8:00 PM', name: 'Dinner', description: 'At Orchard'}]
+        })
 
     const [visible, setVisible] = useState(false)
 
     const eventRef = firebase.firestore().collection('events')
-
-    const getEvent = () => {
-        eventRef
-            .where('userId', '==', firebase.auth().currentUser.uid.toString())
-            .onSnapshot((snapshot) => {
-                const item = {};
-                snapshot.forEach((doc) => {
-                    if (!item[doc.date]) {
-                        item[doc.date] = [];
-                    }
-                    item[doc.date].push({id: doc.id, ...doc.data()})
-                })
-                setItems(item)
-            })
-    }
-
-    useEffect(() => {
-        getEvent();
-    }, []);
 
     const closeModal = () => {
         setVisible(!visible)
@@ -72,13 +54,38 @@ const TimetableScreen = () => {
         }, 1000);
     }
 
+/*    const loadItems = () => {
+        setTimeout(() => {
+            eventRef
+                .where('userId', '==', firebase.auth().currentUser.uid.toString())
+                .onSnapshot((snapshot) => {
+                    snapshot.forEach((doc) => {
+                        if (!items[doc.date]) {
+                            items[doc.date] = [];
+                        }
+                        items[doc.date].push({
+                            startTime: doc.startTime,
+                            endTime: doc.endTime,
+                            name: doc.name,
+                            description: doc.description
+                        })
+                    })
+                })
+            const newItems = {};
+            Object.keys(items).forEach(key => {
+                newItems[key] = items[key];
+            });
+            setItems(newItems)
+        }, 1000);
+    }*/
+
     const renderItem = (item) => {
         return (
             <View style={styles.item}>
                 <Card>
                     <Card.Content style={styles.itemCard}>
                         <View>
-                            <Text style={styles.time}>{item.startTime - item.endTime}</Text>
+                            <Text style={styles.time}>{item.startTime} - {item.endTime}</Text>
                             <Text style={styles.name}>{item.name}</Text>
                             <Text style={styles.description}>{item.description}</Text>
                         </View>
