@@ -5,6 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import HomeScreen from "./HomeScreen";
 import TodoScreen from "./TodoScreen"
 import TimetableScreen from "./TimetableScreen";
+import TrackerScreen from "./TrackerScreen";
 import ProfileScreen from "./ProfileScreen";
 
 const Tab = createBottomTabNavigator();
@@ -42,6 +43,16 @@ const MainTabScreen = () => {
                 component={TimetableScreen}
                 options={{
                     tabBarLabel: 'Timetable',
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons name="timetable" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="Tracker"
+                component={TrackerScreen}
+                options={{
+                    tabBarLabel: 'Tracker',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="calendar-month" color={color} size={size} />
                     ),
