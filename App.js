@@ -8,6 +8,8 @@ import AddPostScreen from "./screens/AddPostScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
 import CommentsScreen from "./screens/CommentsScreen";
 import AddActivityScreen from "./screens/AddActivityScreen";
+import EntriesScreen from "./screens/EntriesScreen";
+import AddEntryScreen from "./screens/AddEntryScreen";
 
 import {View} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -118,6 +120,23 @@ const Screens = () => {
                 component={AddActivityScreen}
                 options={({navigation}) => ({
                     title: 'Create New Activity',
+                    headerLeft: () => (
+                        <View style={{marginLeft: 10}}>
+                            <FontAwesome.Button
+                                name="angle-left"
+                                size={25}
+                                backgroundColor="#fff"
+                                color="#333"
+                                onPress={() => navigation.navigate('MainTab')}
+                            />
+                        </View>
+                    ),
+                })}
+            />
+            <Stack.Screen
+                name="Entries"
+                component={EntriesScreen}
+                options={({navigation}) => ({
                     headerLeft: () => (
                         <View style={{marginLeft: 10}}>
                             <FontAwesome.Button
