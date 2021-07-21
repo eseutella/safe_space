@@ -61,7 +61,7 @@ const PostCard = ({item, onDelete, onLiked, onComment}) => {
                     <Ionicons name="md-chatbubble-outline" size={25} />
                     <InteractionText active={hasLike}>{commentText}</InteractionText>
                 </Interaction>
-                {firebase.auth().currentUser.uid == item.userId ?
+                {firebase.auth().currentUser.uid === item.userId ?
                 <Interaction onPress={() => onDelete(item.id)}>
                     <Ionicons name="md-trash-bin" size={25} />
                 </Interaction>
