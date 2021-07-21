@@ -4,7 +4,7 @@ import {
     StyleSheet,
     Keyboard,
     TouchableWithoutFeedback,
-    Alert, Text, ActivityIndicator, KeyboardAvoidingView,
+    Alert, Text, ActivityIndicator, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import {InputField,
     InputWrapper,
@@ -68,7 +68,10 @@ const AddPostScreen = ({navigation}) => {
 
     return (
         <DismissKeyboard>
-            <KeyboardAvoidingView style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
                 <InputWrapper>
                     <InputField
                         placeholder="What's on your mind?"
