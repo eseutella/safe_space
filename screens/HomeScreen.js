@@ -1,96 +1,166 @@
-import React from 'react';
-import {View, Text, StyleSheet, FlatList, SafeAreaView, TouchableOpacity} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {Text, StyleSheet, FlatList, SafeAreaView, Alert, RefreshControl, ScrollView, LogBox} from "react-native";
 
-import Icon from 'react-native-vector-icons/Ionicons'
-import Ionicons from "react-native-vector-icons/Ionicons";
 import PostCard from '../components/PostCard';
 
 import {Container} from '../styles/FeedStyles';
 import {Colors, IconButton} from "react-native-paper";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import firebase from '../api/Firebase';
 
-const Posts = [
-    {
-        id: '1',
-        userName: 'Jenny Doe',
-        userImg: require('../assets/users/estella.jpg'),
-        postTime: '4 mins ago',
-        post:
-            'Hey there, this is my test for a post of my social app in React Native.',
-        postImg: require('../assets/posts/nus.png'),
-        liked: true,
-        likes: '14',
-        comments: '5',
-    },
-    {
-        id: '2',
-        userName: 'John Doe',
-        userImg: require('../assets/users/estella.jpg'),
-        postTime: '2 hours ago',
-        post:
-            'Hey there, this is my test for a post of my social app in React Native.',
-        postImg: 'none',
-        liked: false,
-        likes: '8',
-        comments: '0',
-    },
-    {
-        id: '3',
-        userName: 'Ken William',
-        userImg: require('../assets/users/estella.jpg'),
-        postTime: '1 hours ago',
-        post:
-            'Hey there, this is my test for a post of my social app in React Native.',
-        postImg: require('../assets/posts/nus.png'),
-        liked: true,
-        likes: '1',
-        comments: '0',
-    },
-    {
-        id: '4',
-        userName: 'Selina Paul',
-        userImg: require('../assets/users/zhiaowei.jpg'),
-        postTime: '1 day ago',
-        post:
-            'Hey there, this is my test for a post of my social app in React Native.',
-        postImg: require('../assets/posts/nus.png'),
-        liked: true,
-        likes: '22',
-        comments: '4',
-    },
-    {
-        id: '5',
-        userName: 'Christy Alex',
-        userImg: require('../assets/users/zhiaowei.jpg'),
-        postTime: '2 days ago',
-        post:
-            'Hey there, this is my test for a post of my social app in React Native.',
-        postImg: 'none',
-        liked: false,
-        likes: '0',
-        comments: '0',
-    },
-];
 
 const HomeScreen = ({navigation}) => {
+    const [posts, setPosts] = useState(null);
+    const [deleted, setDeleted] = useState(false);
+    const [refreshing, setRefreshing] = React.useState(false);
+    const [loading, setLoading] = useState(true);
+    var commentsScreen = null;
+
+    useEffect(() => {
+        LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    }, [])
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        fetchPosts();
+    }, []);
+
+    const fetchPosts = async () => {
+        try {
+            const list = [];
+
+            // firebase.firestore().collection("users").doc(userId).get().then((userDoc) => {
+            //     console.log(userDoc.data().username);
+            // });
+
+            await firebase.firestore()
+                .collection('posts')
+                .orderBy('postTime', 'desc')
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const {userId, post, postImg, postTime, likes, comments} = doc.data();
+                        list.push({
+                            id: doc.id,
+                            userId: userId,
+                            userName: "",
+                            userImg: require('../assets/users/default.jpeg'),
+                            postTime: postTime,
+                            post: post,
+                            postImg: postImg,
+                            liked: false,
+                            likes: likes,
+                            comments: comments,
+                        });
+                    });
+                });
+
+            // only change the name here because nested firestore don't work
+            for (let post of list) {
+                await firebase.firestore().collection("users").doc(post.userId).get().then((userDoc) => {
+                    post["userName"] = userDoc.data().username;
+                });
+            }
+
+            setPosts(list);
+            setRefreshing(false);
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    useEffect(() => {
+        fetchPosts();
+        navigation.addListener("focus", () => setLoading(!loading));
+    }, [navigation, loading]);
+
+    const handleLike = async (postId) => {
+        const db = firebase.firestore()
+            .collection('posts')
+            .doc(postId);
+        const userId = firebase.auth().currentUser.uid;
+
+        db.get().then((snapshot) => {
+            // list of likes from the firebase
+                let likelist = snapshot.get("likes");
+            if (!Array.isArray(likelist)) {
+                likelist = [];
+            }
+
+            // current user who likes the post has already liked it before
+            if (likelist.find(id => id === userId)) {
+                likelist = likelist.filter(id => id !== userId);  // remove current user from likelist
+            } else {
+                likelist.push(userId);
+            }
+
+            db.update({likes: likelist});
+        });
+    };
+
+
+    const handleComment = (postId) => {
+            navigation.navigate('Comments', {
+                // comments: commentArray,
+                post: postId
+            })
+    }
+
+    const handleDelete = (postId) => {
+        Alert.alert(
+            'Delete post',
+            'Are you sure?',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed!'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirm',
+                    onPress: () => deletePost(postId),
+                },
+            ],
+            {cancelable: false},
+        );
+    };
+
+    const deletePost = (postId) => {
+        console.log('Current Post Id: ', postId);
+        firebase.firestore().collection('posts')
+                    .doc(postId)
+                    .delete()
+                    .then(() => {
+                        Alert.alert(
+                    'Post deleted!',
+                    'Your post has been deleted successfully!',
+                );
+            })
+        setDeleted(true);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Safe Space</Text>
-            <IconButton
-                icon="plus"
-                color={Colors.grey600}
-                size={30}
-                onPress={() => navigation.navigate('AddPost')}
-                style={styles.iconStyle}
-            />
-            <Container>
-                <FlatList
-                    data={Posts}
-                    renderItem={({item})=><PostCard item={item} />}
-                    keyExtractor={item=>item.id}
-                    showsVerticalScrollIndicator={false}
+                <Text style={styles.title}>Safe Space</Text>
+                <IconButton
+                    icon="plus"
+                    color={Colors.grey600}
+                    size={30}
+                    onPress={() => navigation.navigate('AddPost')}
+                    style={styles.iconStyle}
                 />
-            </Container>
+            <ScrollView showsVerticalScrollIndicator={false} >
+                <Container>
+                    <FlatList
+                        data={posts}
+                        renderItem={({item}) => <PostCard item={item} onDelete={handleDelete}
+                                                          onLiked={handleLike}
+                                                          onComment={handleComment}
+                        />}
+                        keyExtractor={item=>item.id}
+                    />
+                </Container>
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            </ScrollView>
         </SafeAreaView>
     );
 };

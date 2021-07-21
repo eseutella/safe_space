@@ -1,20 +1,55 @@
-import React from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import firebase from "../api/Firebase";
+import PostCard from '../components/PostCard';
 
 const ProfileScreen = ({navigation}) => {
+
+    const user = firebase.auth().currentUser;
+    const[userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const getUser = async() => {
+        await firebase.firestore()
+            .collection("users")
+            .doc(user.uid)
+            .get()
+            .then((documentSnapshot) => {
+                if (documentSnapshot.exists) {
+                    console.log('User Data', documentSnapshot.data());
+                    setUserData(documentSnapshot.data());
+                }
+            })
+    }
+
+    useEffect(() => {
+        getUser();
+        navigation.addListener("focus", () => setLoading(!loading));
+    }, [navigation, loading]);
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Welcome {firebase.auth().currentUser.displayName}!</Text>
-            <IconButton
-                icon="dots-horizontal"
-                color={Colors.grey600}
-                size={30}
-                onPress={() => navigation.navigate('Settings')}
-                style={styles.iconStyle}
-            />
-        </View>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+            <ScrollView
+                style={styles.container}
+                contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
+                showsVerticalScrollIndicator={false}>
+                <Image
+                    style={styles.userImg}
+                    source={require('../assets/users/default.jpeg')}
+                />
+                <Text style={styles.userName}> {userData ? userData.username : "Test"} </Text>
+                <Text style={styles.about}> {userData ? userData.aboutMe || 'No details added.' : ""} </Text>
+                <View style={styles.userBtnWrapper}>
+                    <TouchableOpacity style={styles.userBtn} onPress={() => {navigation.navigate('EditProfile')}}>
+                        <Text style={styles.userBtnTxt}> Edit Profile </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.userBtn} onPress={() => {navigation.navigate('Settings')}}>
+                        <Text style={styles.userBtnTxt}> Log out </Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
@@ -22,19 +57,38 @@ export default ProfileScreen;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: '#fff',
         padding: 20,
     },
-    text: {
-        fontSize: 20,
-        color: '#333333'
+    userImg: {
+        marginTop: 100,
+        height: 300,
+        width: 300,
+        borderRadius: 75,
     },
-    iconStyle: {
-        position: 'absolute',
-        right: 5,
-        top: 40,
+    userName: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        marginTop: 40,
+        marginBottom: 10,
+    },
+    userBtnWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: '100%',
+        marginBottom: 10,
+    },
+    userBtn: {
+        marginTop: 20,
+        borderColor: '#2e64e5',
+        borderWidth: 2,
+        borderRadius: 3,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        marginHorizontal: 5,
+    },
+    userBtnTxt: {
+        color: '#2e64e5',
     }
 });
