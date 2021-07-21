@@ -7,6 +7,7 @@ import MainTabScreen from "./screens/MainTabScreen";
 import AddPostScreen from "./screens/AddPostScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
 import CommentsScreen from "./screens/CommentsScreen";
+import AddActivityScreen from "./screens/AddActivityScreen";
 
 import {View} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -111,6 +112,24 @@ const Screens = () => {
                             </View>
                         ),
                     })}
+            />
+            <Stack.Screen
+                name="AddActivity"
+                component={AddActivityScreen}
+                options={({navigation}) => ({
+                    title: 'Create New Activity',
+                    headerLeft: () => (
+                        <View style={{marginLeft: 10}}>
+                            <FontAwesome.Button
+                                name="angle-left"
+                                size={25}
+                                backgroundColor="#fff"
+                                color="#333"
+                                onPress={() => navigation.navigate('MainTab')}
+                            />
+                        </View>
+                    ),
+                })}
             />
         </Stack.Navigator>
     )
