@@ -1,18 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import FormButton from '../components/login/FormButton';
-import { CommonActions } from "@react-navigation/native";
 import firebase from '../api/Firebase';
 
-const SettingsScreen = ({navigation}) => {
+const SettingsScreen = () => {
     return (
         <View style={styles.container}>
-{/*            <FormButton buttonTitle='Logout' onPress={() =>
-                navigation.dispatch(CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "Login" }]
-                }))}
-            />*/}
             <FormButton
                 buttonTitle='Logout'
                 onPress={() => {firebase.auth().signOut()}}

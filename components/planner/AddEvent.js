@@ -1,15 +1,121 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity, Alert} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from 'moment';
+import * as Animatable from "react-native-animatable";
+import firebase from "../../api/Firebase";
 
 const AddEvent = ({closeModal}) => {
     const [data, setData] = useState({
         date: '',
+        formattedDate: '',
         startTime: '',
+        unformattedStartTime: '',
         endTime: '',
         eventName: '',
-        eventDescription: ''
+        eventDescription: '',
+        isValidEndTime: true,
+        clearInput: false
     })
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [mode, setMode] = useState('date');
+    const [startTime, setStartTime] = useState('true')
+
+    const showMode = (currentMode) => {
+        setDatePickerVisibility(true);
+        setMode(currentMode);
+    };
+
+    const showDatePicker = () => {
+        showMode('date');
+    };
+
+    const showStartTimePicker = () => {
+        showMode('time');
+        setStartTime('true')
+    };
+
+    const showEndTimePicker = () => {
+        showMode('time');
+        setStartTime('false')
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date) => {
+        if (mode === 'date') {
+            setData({
+                ...data,
+                date: moment(date).format().split('T')[0],
+                formattedDate: moment(date).format('MMMM Do YYYY')
+            })
+        } else {
+            if (startTime === 'true') {
+                setData({
+                    ...data,
+                    startTime: moment(date).format('LT'),
+                    unformattedStartTime: date
+                })
+            } else {
+                if (date > data.unformattedStartTime) {
+                    setData({
+                        ...data,
+                        endTime: moment(date).format('LT'),
+                        isValidEndTime: true
+                    })
+                } else {
+                    setData({
+                        ...data,
+                        endTime: moment(date).format('LT'),
+                        isValidEndTime: false
+                    })
+                }
+            }
+        }
+        hideDatePicker();
+    };
+
+    const createEvent = () => {
+        if (data.formattedDate === '' || data.startTime === '' || data.endTime === '' || data.eventName === '') {
+            Alert.alert('Error!', 'There are empty fields', [
+                {text: 'Okay'}
+            ]);
+        } else if (!data.isValidEndTime) {
+            Alert.alert('Error!', 'End time must be after start time.',
+                [{text: 'Okay'}]
+            )
+        } else {
+            firebase.firestore().collection('events').add({
+                userId: firebase.auth().currentUser.uid,
+                date: data.date,
+                startTime: data.startTime,
+                endTime: data.endTime,
+                name: data.eventName,
+                description: data.eventDescription
+            })
+                .then(() => {
+                    Alert.alert('Success!', 'Event successfully added.',
+                        [
+                            {text: 'Okay', onPress: () => closeModal()},
+                            {text: 'Add new event'}
+                        ]
+                    )
+                })
+
+            setData({
+                ...data,
+                formattedDate: '',
+                startTime: '',
+                endTime: '',
+                eventName: '',
+                eventDescription: ''
+            });
+        }
+    };
+
     return (
         <KeyboardAvoidingView
             style={styles.container}
@@ -22,6 +128,15 @@ const AddEvent = ({closeModal}) => {
                     color="#000000"
                 />
             </TouchableOpacity>
+
+            <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode={mode}
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+                display={'default'}
+            />
+
             <View style={{alignSelf: 'stretch', marginHorizontal: 20}}>
                 <Text style={styles.title}>Create New Event</Text>
                 <View style={styles.textInput}>
@@ -29,52 +144,52 @@ const AddEvent = ({closeModal}) => {
                     <TextInput
                         style={styles.textInputContent}
                         onChangeText={(text) => setData({...data, eventName: text})}
+                        value={!data.clearInput ? data.eventName : null}
+                        onSubmitEditing={() => setData({...data, clearInput: !data.clearInput})}
                     />
                 </View>
+
                 <View style={styles.textInput}>
                     <Text style={styles.textInputTitle}>Date: </Text>
-                    <TextInput
-                        style={styles.textInputContent}
-                        onChangeText={(text) => setData({...data, date: text})}
-                    />
-                    <TouchableOpacity
-                        style={{marginLeft: 5}}
-                        onPress={() => {}}
-                    >
-                        <AntDesign
-                            name="calendar"
-                            size={24}
-                            color="#000000"
-                        />
+                    <TouchableOpacity style={styles.textInputContent} onPress={showDatePicker}>
+                        <Text style={styles.textInputContent}>{data.formattedDate}</Text>
                     </TouchableOpacity>
                 </View>
+
                 <View style={styles.textInput}>
                     <Text style={styles.textInputTitle}>Start Time: </Text>
-                    <TextInput
-                        style={styles.textInputContent}
-                        onChangeText={(text) => setData({...data, startTime: text})}
-                    />
+                    <TouchableOpacity style={styles.textInputContent} onPress={showStartTimePicker}>
+                        <Text style={styles.textInputContent}>{data.startTime}</Text>
+                    </TouchableOpacity>
+
                     <Text style={[styles.textInputTitle, {marginLeft: 5}]}>End Time: </Text>
-                    <TextInput
-                        style={styles.textInputContent}
-                        onChangeText={(text) => setData({...data, endTime: text})}
-                    />
+                    <TouchableOpacity style={styles.textInputContent} onPress={showEndTimePicker}>
+                        <Text style={styles.textInputContent}>{data.endTime}</Text>
+                    </TouchableOpacity>
                 </View>
+
+                { data.isValidEndTime ? null :
+                    <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>End time must be after start time.</Text>
+                    </Animatable.View>
+                }
+
                 <View style={styles.textInput}>
                     <Text style={styles.textInputTitle}>Description: </Text>
                     <TextInput
                         style={styles.textInputContent}
                         onChangeText={(text) => setData({...data, eventDescription: text})}
+                        value={!data.clearInput ? data.eventDescription : null}
+                        onSubmitEditing={() => setData({...data, clearInput: !data.clearInput})}
                     />
                 </View>
                 <TouchableOpacity
                     style={styles.createButton}
-                    onPress={() => {}}
+                    onPress={() => createEvent()}
                 >
                     <Text style={{color: '#fff', fontWeight: '600'}}>Create</Text>
                 </TouchableOpacity>
             </View>
-
         </KeyboardAvoidingView>
     )
 }
@@ -123,5 +238,11 @@ const styles = StyleSheet.create({
         flex: 1,
         borderBottomWidth: 1,
         borderBottomColor: 'grey',
-    }
+        fontSize: 16,
+    },
+    errorMsg: {
+        color: '#FF0000',
+        fontSize: 14,
+        marginBottom: 20
+    },
 })

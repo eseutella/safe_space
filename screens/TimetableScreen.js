@@ -1,21 +1,25 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Modal} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Modal, Alert, SafeAreaView} from "react-native";
 import {Agenda} from "react-native-calendars";
 import {Card} from "react-native-paper";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import AddEvent from "../components/planner/AddEvent";
+import firebase from "../api/Firebase";
 
 const TimetableScreen = () => {
-    const [items, setItems] = useState({
-        '2021-07-05': [
-            {time: '10:00 AM - 11:00 AM', name: 'Go for a jog'},
-            {time: '2:00 PM - 3:00 PM', name: 'Vaccination', description: 'At Tampines Hub'}
-        ],
-        '2021-07-06': [{time: '2:00 PM - 4:00 PM', name: 'Project meeting', description: 'On Zoom'}],
-        '2021-07-07': [{time: '6:00 PM - 8:00 PM', name: 'Dinner', description: 'At Orchard'}]
-    })
+    const [items, setItems] = useState(
+        {
+            '2021-07-23': [
+                {startTime: '10:00 AM', endTime: '11:00 AM', name: 'Go for a jog'},
+                {startTime: '2:00 PM', endTime: '3:00 PM', name: 'Vaccination', description: 'At Tampines Hub'}
+            ],
+            '2021-07-24': [{startTime: '2:00 PM', endTime: '4:00 PM', name: 'Project meeting', description: 'On Zoom'}],
+            '2021-07-25': [{startTime: '6:00 PM', endTime: '8:00 PM', name: 'Dinner', description: 'At Orchard'}]
+        })
 
     const [visible, setVisible] = useState(false)
+
+    const eventRef = firebase.firestore().collection('events')
 
     const closeModal = () => {
         setVisible(!visible)
@@ -33,15 +37,9 @@ const TimetableScreen = () => {
                 const strTime = timeToString(time);
                 if (!items[strTime]) {
                     items[strTime] = [];
-/*                    const numItems = Math.floor(Math.random() * 3 + 1);
-                    for (let j = 0; j < numItems; j++) {
-                        items[strTime].push({
-                            name: 'Item for ' + strTime + ' #' + j,
-                            height: Math.max(50, Math.floor(Math.random() * 150))
-                        });
-                    }*/
                 }
             }
+            console.log(items)
             const newItems = {};
             Object.keys(items).forEach(key => {
                 newItems[key] = items[key];
@@ -50,16 +48,52 @@ const TimetableScreen = () => {
         }, 1000);
     }
 
+/*    const loadItems = () => {
+        eventRef
+            .where('userId', '==', firebase.auth().currentUser.uid.toString())
+            .onSnapshot((snapshot) => {
+                //const item = {};
+                snapshot.forEach((doc) => {
+                    if (!items[doc.date]) {
+                        items[doc.date] = [];
+                    }
+                    items[doc.date].push({
+                        startTime: doc.startTime,
+                        endTime: doc.endTime,
+                        name: doc.name,
+                        description: doc.description
+                    })
+                })
+                console.log(items)
+                setItems(items)
+            })
+    }*/
+
     const renderItem = (item) => {
         return (
             <View style={styles.item}>
                 <Card>
                     <Card.Content style={styles.itemCard}>
                         <View>
-                            <Text style={styles.time}>{item.time}</Text>
+                            <Text style={styles.time}>{item.startTime} - {item.endTime}</Text>
                             <Text style={styles.name}>{item.name}</Text>
                             <Text style={styles.description}>{item.description}</Text>
                         </View>
+                        <TouchableOpacity
+                            style={styles.iconStyle}
+                            onPress={() => Alert.alert('Alert!','Are you sure you want to delete the event?',
+                                [
+                                    {text: 'Yes', onPress: () => {}},
+                                    {text: 'No'}
+                                ])
+                            }
+                        >
+                            <AntDesign
+                                name="delete"
+                                size={28}
+                                color="#000000"
+                            />
+                        </TouchableOpacity>
                     </Card.Content>
                 </Card>
             </View>
@@ -81,7 +115,7 @@ const TimetableScreen = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Modal
                 animationType='slide'
                 visible={visible}
@@ -109,7 +143,7 @@ const TimetableScreen = () => {
                     color="#fff"
                 />
             </TouchableOpacity>
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -160,5 +194,10 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: 'grey',
         marginTop: 5
+    },
+    iconStyle: {
+        position: 'absolute',
+        bottom: 10,
+        right: 10
     }
 });
