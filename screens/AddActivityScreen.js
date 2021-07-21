@@ -84,7 +84,7 @@ export default AddActivityScreen;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#f9fafd',
+        backgroundColor: '#fff',
         flex: 1,
         alignSelf: 'stretch',
         padding: 20,
