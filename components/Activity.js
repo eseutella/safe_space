@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity, Alert} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import firebase from "../api/Firebase";
 
-const Activity = ({activity, onPress}) => {
+const Activity = ({activity}) => {
     const activityRef = firebase.firestore().collection('activities').doc(activity.id)
 
     const deleteActivity = () => {
@@ -14,7 +14,7 @@ const Activity = ({activity, onPress}) => {
         <View>
             <TouchableOpacity
                 style={[styles.activityContainer, {backgroundColor: activity.color}]}
-                onPress={onPress}
+                onPress={() => {}}
             >
                 <Text style={styles.activityTitle} numberOfLines={1}>
                     {activity.name}
