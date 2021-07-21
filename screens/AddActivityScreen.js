@@ -38,6 +38,7 @@ const AddActivityScreen = ({navigation, route}) => {
                 userId: firebase.auth().currentUser.uid,
                 name: data.name,
                 color: data.color,
+                entries: []
             })
                 .then(() => {
                     Alert.alert('Success!', 'Activity successfully added.',
