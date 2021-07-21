@@ -1,17 +1,47 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar } from 'react-native';
 import {Colors, IconButton} from "react-native-paper";
 import Activity from "../components/Activity";
+import firebase from "../api/Firebase";
 
 const TrackerScreen = ({navigation}) => {
-    const [activities, setActivities] = useState([
-        {id: 1, name: 'Exercise', color: "#D85963"},
-        {id: 2, name: 'Meditation', color: "#D159D8"},
-        {id: 3, name: 'Social', color: "#8022D9"},
-        {id: 4, name: 'Self-care', color: "#595BD9"},
-        {id: 5, name: 'Sleep', color: "#24A6D9"},
-        {id: 6, name: 'Mood', color: "#5CD859"},
-    ]);
+    const [activities, setActivities] = useState([]);
+
+    const activityRef = firebase.firestore().collection('activities')
+
+    const getActivity = () => {
+        activityRef
+            .where('userId', 'in', [firebase.auth().currentUser.uid.toString(), 'default'])
+            .onSnapshot((snapshot) => {
+                const activity = [];
+                snapshot.forEach((doc) => {
+                    activity.push({id: doc.id, ...doc.data()})
+                })
+                setActivities(activity.sort(compare))
+            })
+    }
+
+    const compare = (a, b) => {
+        if (a.userId === 'default' && b.userId !== 'default'){
+            return -1;
+        }
+        if (a.userId !== 'default' && b.userId === 'default'){
+            return 1;
+        }
+        else {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name){
+                return 1;
+            }
+            return 0
+        }
+    }
+
+    useEffect(() => {
+        getActivity();
+    }, []);
 
     const renderActivity = ({item}) => (
         <Activity activity={item}/>
@@ -23,7 +53,7 @@ const TrackerScreen = ({navigation}) => {
                 icon="plus"
                 color={Colors.grey600}
                 size={30}
-                onPress={() => navigation.navigate('AddActivity', {activities})}
+                onPress={() => navigation.navigate('AddActivity', {activities: activities})}
                 style={styles.iconStyle}
             />
             <View style={{marginTop: 30}}>

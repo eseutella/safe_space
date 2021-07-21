@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Alert} from "react-native";
 import firebase from "../api/Firebase";
 
-const AddActivityScreen = ({navigation, activity}) => {
+const AddActivityScreen = ({navigation, route}) => {
     const backgroundColors = ["#a84b19", "#D88559", "#D85963", "#D159D8", "#8022D9", "#595BD9", "#24A6D9", "#5CD859"]
     const [data, setData] = useState({
         name: '',
@@ -22,15 +22,17 @@ const AddActivityScreen = ({navigation, activity}) => {
         })
     };
 
+    const activities = route.params.activities;
+
     const createActivity = () => {
         if (data.name === '') {
             Alert.alert('Error!', 'Please input activity name', [
                 {text: 'Okay'}
             ]);
-/*        } else if (activity.length > 0 && activity.some(activity => activity.name === data.name)) {
+        } else if (activities.length > 0 && activities.some(activity => activity.name === data.name)) {
             Alert.alert('Error!', 'Activity already exists',
                 [{text: 'Okay'}]
-            )*/
+            )
         } else {
             firebase.firestore().collection('activities').add({
                 userId: firebase.auth().currentUser.uid,
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
         flex: 1,
         borderBottomWidth: 1,
         borderBottomColor: 'grey',
-        fontSize: 16,
+        fontSize: 18,
     },
     createButton: {
         marginTop: 40,
