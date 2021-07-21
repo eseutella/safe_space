@@ -7,7 +7,8 @@ import MainTabScreen from "./screens/MainTabScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import AddPostScreen from "./screens/AddPostScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
-import HomeScreen from "./screens/HomeScreen";
+import CommentsScreen from "./screens/CommentsScreen";
+
 import {View} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import firebase from './api/Firebase';
@@ -94,6 +95,24 @@ const Screens = () => {
                                 backgroundColor="#fff"
                                 color="#333"
                                 onPress={() => navigation.navigate('Profile')}
+                            />
+                        </View>
+                    ),
+                })}
+            />
+            <Stack.Screen
+                name="Comments"
+                component={CommentsScreen}
+                options={({navigation}) => ({
+                    title: 'Comments',
+                    headerLeft: () => (
+                        <View style={{marginLeft: 10}}>
+                            <FontAwesome.Button
+                                name="angle-left"
+                                size={25}
+                                backgroundColor="#fff"
+                                color="#333"
+                                onPress={() => navigation.navigate('MainTab')}
                             />
                         </View>
                     ),

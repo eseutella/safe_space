@@ -4,7 +4,7 @@ import {
     StyleSheet,
     Keyboard,
     TouchableWithoutFeedback,
-    Alert, Text, ActivityIndicator,
+    Alert, Text, ActivityIndicator, KeyboardAvoidingView,
 } from 'react-native';
 import {InputField,
     InputWrapper,
@@ -68,7 +68,7 @@ const AddPostScreen = ({navigation}) => {
 
     return (
         <DismissKeyboard>
-            <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container}>
                 <InputWrapper>
                     <InputField
                         placeholder="What's on your mind?"
@@ -88,7 +88,7 @@ const AddPostScreen = ({navigation}) => {
                         </SubmitBtn>
                     )}
                 </InputWrapper>
-            </View>
+            </KeyboardAvoidingView>
         </DismissKeyboard>
     );
 };

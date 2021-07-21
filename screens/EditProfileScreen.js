@@ -58,7 +58,7 @@ const EditProfileScreen = () => {
                         }}>
                         </View>
                         <ImageBackground
-                            source={require('../assets/users/zhiaowei.jpg')}
+                            source={require('../assets/users/default.jpeg')}
                             style={{height: 150, width: 150}}
                             imageStyle={{borderRadius: 15}}>
                         </ImageBackground>

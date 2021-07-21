@@ -24,6 +24,7 @@ const PostCard = ({item, onDelete, onLiked, onComment}) => {
 
     // item is the post object retrieved from database
     const hasLike = item.likes.length >= 1;
+    const hasComment = item.comments.length >= 1;
 
     if (item.likes.length === 0) {
         likeText = 'Like';
@@ -33,12 +34,10 @@ const PostCard = ({item, onDelete, onLiked, onComment}) => {
 
     // TODO: do the same for comments
 
-    if (item.comments == 1) {
-        commentText = '1 Comment';
-    } else if (item.comments > 1) {
-        commentText = item.comments + ' Comments';
-    } else {
+    if (item.comments.length === 0) {
         commentText = 'Comment';
+    } else {
+        commentText = item.comments.length + ' Comments';
     }
 
     return(
@@ -58,9 +57,9 @@ const PostCard = ({item, onDelete, onLiked, onComment}) => {
                     <Ionicons name={likeIcon} size={25} color={likeIconColor} />
                     <InteractionText active={hasLike}>{likeText}</InteractionText>
                 </Interaction>
-                <Interaction onPress={() => onComment(item.id)}>
+                <Interaction onPress={() => onComment(item.id)} active={hasComment}>
                     <Ionicons name="md-chatbubble-outline" size={25} />
-                    <InteractionText>{commentText}</InteractionText>
+                    <InteractionText active={hasLike}>{commentText}</InteractionText>
                 </Interaction>
                 {firebase.auth().currentUser.uid == item.userId ?
                 <Interaction onPress={() => onDelete(item.id)}>

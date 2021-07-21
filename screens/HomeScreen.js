@@ -13,6 +13,7 @@ const HomeScreen = ({navigation}) => {
     const [deleted, setDeleted] = useState(false);
     const [refreshing, setRefreshing] = React.useState(false);
     const [loading, setLoading] = useState(true);
+    var commentsScreen = null;
 
     useEffect(() => {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -27,19 +28,22 @@ const HomeScreen = ({navigation}) => {
         try {
             const list = [];
 
+            // firebase.firestore().collection("users").doc(userId).get().then((userDoc) => {
+            //     console.log(userDoc.data().username);
+            // });
+
             await firebase.firestore()
                 .collection('posts')
                 .orderBy('postTime', 'desc')
                 .get()
                 .then((querySnapshot) => {
-
                     querySnapshot.forEach((doc) => {
                         const {userId, post, postImg, postTime, likes, comments} = doc.data();
                         list.push({
                             id: doc.id,
-                            userId,
-                            userName: 'Test Name',
-                            userImg: require('../assets/users/zhiaowei.jpg'),
+                            userId: userId,
+                            userName: "",
+                            userImg: require('../assets/users/default.jpeg'),
                             postTime: postTime,
                             post: post,
                             postImg: postImg,
@@ -49,6 +53,13 @@ const HomeScreen = ({navigation}) => {
                         });
                     });
                 });
+
+            // only change the name here because nested firestore don't work
+            for (let post of list) {
+                await firebase.firestore().collection("users").doc(post.userId).get().then((userDoc) => {
+                    post["userName"] = userDoc.data().username;
+                });
+            }
 
             setPosts(list);
             setRefreshing(false);
@@ -70,7 +81,7 @@ const HomeScreen = ({navigation}) => {
 
         db.get().then((snapshot) => {
             // list of likes from the firebase
-            let likelist = snapshot.get("likes");
+                let likelist = snapshot.get("likes");
             if (!Array.isArray(likelist)) {
                 likelist = [];
             }
@@ -88,7 +99,10 @@ const HomeScreen = ({navigation}) => {
 
 
     const handleComment = (postId) => {
-        console.log("commented");
+            navigation.navigate('Comments', {
+                // comments: commentArray,
+                post: postId
+            })
     }
 
     const handleDelete = (postId) => {

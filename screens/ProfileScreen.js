@@ -36,7 +36,7 @@ const ProfileScreen = ({navigation}) => {
                 showsVerticalScrollIndicator={false}>
                 <Image
                     style={styles.userImg}
-                    source={require('../assets/users/zhiaowei.jpg')}
+                    source={require('../assets/users/default.jpeg')}
                 />
                 <Text style={styles.userName}> {userData ? userData.username : "Test"} </Text>
                 <Text style={styles.about}> {userData ? userData.aboutMe || 'No details added.' : ""} </Text>
