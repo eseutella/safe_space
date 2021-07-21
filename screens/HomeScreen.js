@@ -107,17 +107,17 @@ const HomeScreen = ({navigation}) => {
 
     const handleDelete = (postId) => {
         Alert.alert(
-            'Delete post',
-            'Are you sure?',
+            'Alert!',
+            'Are you sure you want to delete the post?',
             [
                 {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed!'),
-                    style: 'cancel',
+                    text: 'Yes',
+                    onPress: () => deletePost(postId),
                 },
                 {
-                    text: 'Confirm',
-                    onPress: () => deletePost(postId),
+                    text: 'No',
+                    onPress: () => console.log('Cancel Pressed!'),
+                    style: 'cancel',
                 },
             ],
             {cancelable: false},
