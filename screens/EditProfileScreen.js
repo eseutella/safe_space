@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, ImageBackground, StyleSheet, TextInput, SafeAreaView, Alert} from "react-native";
-import {BottomSheet, colors} from "react-native-elements";
+import {colors} from "react-native-elements";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import firebase from "../api/Firebase";
 
-const EditProfileScreen = () => {
+const EditProfileScreen = ({navigation}) => {
 
     const user = firebase.auth().currentUser;
     const[userData, setUserData] = useState(null);
@@ -53,8 +53,8 @@ const EditProfileScreen = () => {
                             height: 100,
                             width: 100,
                             borderRadius: 15,
-                            justifyContent: 'centre',
-                            alignItems: 'centre',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}>
                         </View>
                         <ImageBackground

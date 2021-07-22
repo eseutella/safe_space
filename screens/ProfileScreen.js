@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity} from "react-native";
-import { IconButton, Colors } from 'react-native-paper';
 import firebase from "../api/Firebase";
-import PostCard from '../components/PostCard';
 
 const ProfileScreen = ({navigation}) => {
 

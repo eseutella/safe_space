@@ -47,14 +47,11 @@ export const PostTime = styled.Text`
 
 export const PostText = styled.Text`
     font-size: 14px;
-    padding-top: 10px;
-    margin-bottom: 5px;
 `;
 
 export const PostImg = styled.Image`
     width: 100%;
     height: 250px;
-    /* margin-top: 15px; */
 `;
 
 export const Divider = styled.View`
