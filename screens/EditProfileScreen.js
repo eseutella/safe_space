@@ -84,7 +84,6 @@ const EditProfileScreen = ({navigation}) => {
                             placeholderTextColor="#666666"
                             value={userData ? userData.aboutMe : ''}
                             onChangeText={(txt) => setUserData({...userData, aboutMe: txt})}
-                            keyboardType="email-address"
                             autoCorrect={false}
                             style={styles.textInput}
                         />

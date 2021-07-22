@@ -35,7 +35,6 @@ const TodoScreen = () => {
         return 0;
     }
 
-
     useEffect(() => {
         getList();
     }, []);

@@ -5,7 +5,7 @@ import firebase from "../api/Firebase";
 const ProfileScreen = ({navigation}) => {
 
     const user = firebase.auth().currentUser;
-    const[userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const getUser = async() => {
@@ -42,8 +42,8 @@ const ProfileScreen = ({navigation}) => {
                     <TouchableOpacity style={styles.userBtn} onPress={() => {navigation.navigate('EditProfile')}}>
                         <Text style={styles.userBtnTxt}> Edit Profile </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.userBtn} onPress={() => {navigation.navigate('Settings')}}>
-                        <Text style={styles.userBtnTxt}> Log out </Text>
+                    <TouchableOpacity style={styles.userBtn} onPress={() => {firebase.auth().signOut()}}>
+                        <Text style={styles.userBtnTxt}> Log Out </Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

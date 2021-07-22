@@ -4,10 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import MainTabScreen from "./screens/MainTabScreen";
-import SettingsScreen from "./screens/SettingsScreen";
 import AddPostScreen from "./screens/AddPostScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
 import CommentsScreen from "./screens/CommentsScreen";
+import AddActivityScreen from "./screens/AddActivityScreen";
 
 import {View} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -58,29 +58,6 @@ const Screens = () => {
                 name="MainTab"
                 component={MainTabScreen}
                 options={{header: () => null}}
-            />
-            <Stack.Screen
-                name="Settings"
-                component={SettingsScreen}
-                options={({navigation}) => ({
-                    title: 'Settings and Privacy',
-                    headerStyle: {
-                        backgroundColor: '#fff',
-                        shadowColor: '#f9fafd',
-                        elevation: 0,
-                    },
-                    headerLeft: () => (
-                        <View style={{marginLeft: 10}}>
-                            <FontAwesome.Button
-                                name="angle-left"
-                                size={25}
-                                backgroundColor="#fff"
-                                color="#333"
-                                onPress={() => navigation.navigate('Profile')}
-                            />
-                        </View>
-                    ),
-                })}
             />
             <Stack.Screen
                 name="EditProfile"
@@ -135,6 +112,24 @@ const Screens = () => {
                             </View>
                         ),
                     })}
+            />
+            <Stack.Screen
+                name="AddActivity"
+                component={AddActivityScreen}
+                options={({navigation}) => ({
+                    title: 'Create New Activity',
+                    headerLeft: () => (
+                        <View style={{marginLeft: 10}}>
+                            <FontAwesome.Button
+                                name="angle-left"
+                                size={25}
+                                backgroundColor="#fff"
+                                color="#333"
+                                onPress={() => navigation.navigate('MainTab')}
+                            />
+                        </View>
+                    ),
+                })}
             />
         </Stack.Navigator>
     )
