@@ -3,6 +3,7 @@
     "name": "Safe Space",
     "slug": "safe_space",
     "version": "1.0.0",
+    "sdkVersion": "41.0.0",
     "orientation": "portrait",
     "icon": "./assets/safe-space-icon.png",
     "splash": {
@@ -17,13 +18,17 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.orbital.safespace",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/safe-space-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundColor": "#FFFFFF",
+      },
+      "package": "com.orbital.safespace",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/safe-space-icon.png"

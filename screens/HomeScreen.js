@@ -13,7 +13,6 @@ const HomeScreen = ({navigation}) => {
     const [deleted, setDeleted] = useState(false);
     const [refreshing, setRefreshing] = React.useState(false);
     const [loading, setLoading] = useState(true);
-    var commentsScreen = null;
 
     useEffect(() => {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -24,13 +23,14 @@ const HomeScreen = ({navigation}) => {
         fetchPosts();
     }, []);
 
+    useEffect(() => {
+        fetchPosts();
+        navigation.addListener("focus", () => setLoading(!loading));
+    }, [navigation, loading]);
+
     const fetchPosts = async () => {
         try {
             const list = [];
-
-            // firebase.firestore().collection("users").doc(userId).get().then((userDoc) => {
-            //     console.log(userDoc.data().username);
-            // });
 
             await firebase.firestore()
                 .collection('posts')
@@ -68,11 +68,6 @@ const HomeScreen = ({navigation}) => {
         }
     };
 
-    useEffect(() => {
-        fetchPosts();
-        navigation.addListener("focus", () => setLoading(!loading));
-    }, [navigation, loading]);
-
     const handleLike = async (postId) => {
         const db = firebase.firestore()
             .collection('posts')
@@ -95,6 +90,7 @@ const HomeScreen = ({navigation}) => {
 
             db.update({likes: likelist});
         });
+        onRefresh();
     };
 
 
@@ -148,7 +144,8 @@ const HomeScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('AddPost')}
                     style={styles.iconStyle}
                 />
-            <ScrollView showsVerticalScrollIndicator={false} >
+            <ScrollView showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 <Container>
                     <FlatList
                         data={posts}
@@ -159,7 +156,6 @@ const HomeScreen = ({navigation}) => {
                         keyExtractor={item=>item.id}
                     />
                 </Container>
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             </ScrollView>
         </SafeAreaView>
     );

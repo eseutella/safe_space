@@ -11,11 +11,13 @@ import CommentsCard from '../components/CommentsCard';
 import {InputField, InputWrapper, SubmitBtn, SubmitBtnText} from "../styles/AddPost";
 import firebase from "../api/Firebase";
 import {Container} from "../styles/FeedStyles";
+import * as navigation from "react-native";
 
 const CommentScreen = ({route}) => {
     const [comments, setComments] = useState(null); // new comments
     const [eachComment, setEachComment] = useState(null); // set each comment
     const [refreshing, setRefreshing] = React.useState(false);
+    const [loading, setLoading] = useState(true);
 
     const postId = route.params.post;
 
@@ -93,6 +95,7 @@ const CommentScreen = ({route}) => {
                             'Comment posted!',
                             'Your comment has been posted successfully!',
                         );
+                        onRefresh();
                     } catch {
                         Alert.alert(
                             'Failed to post comment!',
@@ -105,8 +108,8 @@ const CommentScreen = ({route}) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false} >
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <ScrollView showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 <InputWrapper>
                     <InputField
                         placeholder="Enter comments here"
